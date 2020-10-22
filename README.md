@@ -5,35 +5,35 @@ Go examples from exercises of ['A Tour of Go'](https://tour.golang.org/list)
 * [recursion] [concurrency] [pointer] [channel]
 
 ### `crawler`
-* [concurrency] [sync]
+* [recursion] [concurrency] [sync] [random.numbers]
 
 ### `fibonacci`
-* [closures] [function.return.function] [multiple.assignment]
+* [closures] [function.returns.function] [multiple.assignment]
 
 ### `hostos`
-* [runtime] [OSes]
+* [runtime.utilities] [OSes]
 
 ### `images`
-* [interface] [image]
+* [implements.method] [standard.interface] [image]
 * NOTE: cannot (yet) display image locally
 
 ### `ip-addr`
-* [interface] [Stringers]
+* [implements.method] [Stringers]
 
 ### `reader`
-* [interface] [I/O]
+* [[implements.method] [standard.interface] [I/O]
 
 ### `rot13`
-* [interface] [I/O] [Readers.chaining]
+* [[implements.method] [standard.interface] [I/O] [Readers.chaining]
 
 ### `slices`
-* [slice.of.slices]
+* [slice.of.slices] [for.loop]
 
 ### `sqrt`
-* [errors]
+* [error.handling] [for.loop]
 
 ### `tests`
-* [random] [modules]
+* [modules] [command.line.args] [logging] [error.handling] [random.numbers] [date.time] [testing]
 
 ### `word-count`
-* [localtion] [slices]
+* [string.utilities] [slices] [map]
