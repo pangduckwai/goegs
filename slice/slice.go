@@ -38,4 +38,14 @@ func main() {
 		t.s2 = append(t.s2, i*2)
 	}
 	fmt.Println(t.s2)
+	fmt.Println()
+
+	ss := []int{1, 2}
+	fmt.Println("OH", ss)
+	ss = ss[1:]
+	fmt.Println("OH", ss)
+	ss = ss[1:]
+	fmt.Println("OH", ss)
+	// ss = ss[1:]
+	// fmt.Println("OH", ss)
 }
