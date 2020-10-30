@@ -1,4 +1,4 @@
-package main
+package mongo
 
 import (
 	"context"
@@ -133,6 +133,6 @@ func read() {
 }
 
 // mongodb+srv://wdom:<password>@m0-sea9.7zfms.mongodb.net/<dbname>?retryWrites=true&w=majority
-func main() {
-	read()
-}
+// func main() {
+// 	read()
+// }
