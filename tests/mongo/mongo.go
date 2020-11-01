@@ -13,33 +13,41 @@ import (
 
 // Node in memory node
 type Node struct {
-	Round   uint32  // (pkey) indicate progress of the game
-	Turn    uint8   // (pkey) identify the player
-	Action  uint8   // (pkey) Actions a player may takes
-	Indices []uint8 // (pkey) indices of players, territories or cards (Depends on the event)
-	Values  []uint8 // (pkey) Event payload, mainly troop amount, etc (Depends on the event)
-	Runs    uint64  // Total number of runs
-	Wins    uint64  // Total number of won games of this player
-	Parent  *Node
-	Next    []*Node
+	Round  uint32 // (pkey) indicate progress of the game
+	Turn   uint8  // (pkey) identify the player
+	Action uint8  // (pkey) Actions a player may takes
+	Index1 uint8  // (pkey) indices of players, territories or cards (Depends on the event)
+	Index2 uint8  // (pkey) indices of players, territories or cards (Depends on the event)
+	Index3 uint8  // (pkey) indices of players, territories or cards (Depends on the event)
+	Value1 uint32 // (pkey) Event payload, mainly troop amount, etc (Depends on the event)
+	Value2 uint32 // (pkey) Event payload, mainly troop amount, etc (Depends on the event)
+	Value3 uint32 // (pkey) Event payload, mainly troop amount, etc (Depends on the event)
+	Runs   uint64 // Total number of runs
+	Wins   uint64 // Total number of won games of this player
+	Parent *Node
+	Next   []*Node
 }
 
-// Mnode node in mongodb
-type Mnode struct {
-	ID      primitive.ObjectID `bson:"_id,omitempty"`
-	Parent  primitive.ObjectID `bson:"parent,omitempty"`
-	Impl    string             `bson:"impl,omitempty"`
-	Round   uint32             `bson:"round"`             // (pkey) indicate progress of the game
-	Turn    uint8              `bson:"turn"`              // (pkey) identify the player
-	Action  uint8              `bson:"action"`            // (pkey) Actions a player may takes
-	Indices string             `bson:"indices,omitempty"` // (pkey) indices of players, territories or cards (Depends on the event)
-	Values  string             `bson:"values,omitempty"`  // (pkey) Event payload, mainly troop amount, etc (Depends on the event)
-	Runs    uint64             `bson:"runs"`              // Total number of runs
-	Wins    uint64             `bson:"wins"`              // Total number of won games of this player
+// MNode node in mongodb
+type MNode struct {
+	ID     primitive.ObjectID `bson:"_id,omitempty"`
+	Parent primitive.ObjectID `bson:"parent,omitempty"`
+	Impl   string             `bson:"impl,omitempty"`
+	Round  uint32             `bson:"round"`
+	Turn   uint8              `bson:"turn"`
+	Action uint8              `bson:"action"`
+	Index1 uint8              `bson:"index1,omitempty"`
+	Index2 uint8              `bson:"index2,omitempty"`
+	Index3 uint8              `bson:"index3,omitempty"`
+	Value1 uint32             `bson:"value1,omitempty"`
+	Value2 uint32             `bson:"value2,omitempty"`
+	Value3 uint32             `bson:"value3,omitempty"`
+	Runs   uint64             `bson:"runs"`
+	Wins   uint64             `bson:"wins"`
 }
 
 // Root read the root node entry from mongodb
-func Root(impl string) (*Mnode, error) {
+func Root(impl string) (*MNode, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -54,14 +62,16 @@ func Root(impl string) (*Mnode, error) {
 	db := client.Database("wdom")
 	tree := db.Collection("mctree")
 
-	var root Mnode
+	var root MNode
 	if err := tree.FindOne(ctx, bson.M{"impl": impl}).Decode(&root); err != nil {
 		if err == mongo.ErrNoDocuments { // Root node not found, create one
-			root = Mnode{
+			root = MNode{
 				Impl:   impl,
 				Round:  0,
 				Turn:   0,
 				Action: 0,
+				Runs:   0,
+				Wins:   0,
 			}
 			if root.ID == primitive.NilObjectID {
 				fmt.Println("Node is new", root.ID)
@@ -83,48 +93,48 @@ func Root(impl string) (*Mnode, error) {
 }
 
 // Find find a node
-func Find(leaf *Node) (*Mnode, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+// func Find(leaf *Node) (*MNode, error) {
+// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+// 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
-		"mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority",
-	))
-	if err != nil {
-		return nil, err
-	}
-	defer client.Disconnect(ctx)
+// 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
+// 		"mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority",
+// 	))
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer client.Disconnect(ctx)
 
-	db := client.Database("wdom")
-	tree := db.Collection("mctree")
+// 	db := client.Database("wdom")
+// 	tree := db.Collection("mctree")
 
-	var mnode Mnode
-	opts := options.FindOne().SetSort(bson.D{{Key: "round", Value: 1}})
-	filter := bson.M{
-		"round":  leaf.Round,
-		"turn":   leaf.Turn,
-		"action": leaf.Action,
-	}
-	idx := join(leaf.Indices)
-	val := join(leaf.Values)
-	if len(idx) > 0 {
-		filter["indices"] = idx
-	}
-	if len(val) > 0 {
-		filter["values"] = val
-	}
+// 	var mnode MNode
+// 	opts := options.FindOne().SetSort(bson.D{{Key: "round", Value: 1}})
+// 	filter := bson.M{
+// 		"round":  leaf.Round,
+// 		"turn":   leaf.Turn,
+// 		"action": leaf.Action,
+// 	}
+// 	idx := join(leaf.Indices)
+// 	val := join(leaf.Values)
+// 	if len(idx) > 0 {
+// 		filter["indices"] = idx
+// 	}
+// 	if len(val) > 0 {
+// 		filter["values"] = val
+// 	}
 
-	if err := tree.FindOne(ctx, filter, opts).Decode(&mnode); err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, nil
-		}
-		return nil, err
-	}
-	return &mnode, nil
-}
+// 	if err := tree.FindOne(ctx, filter, opts).Decode(&mnode); err != nil {
+// 		if err == mongo.ErrNoDocuments {
+// 			return nil, nil
+// 		}
+// 		return nil, err
+// 	}
+// 	return &mnode, nil
+// }
 
 // Add add a leaf node
-func Add(parent *Mnode, leaf *Node) (*Mnode, error) {
+func Add(parent *MNode, leaf *Node) (*MNode, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -143,42 +153,48 @@ func Add(parent *Mnode, leaf *Node) (*Mnode, error) {
 		"round":  leaf.Round,
 		"turn":   leaf.Turn,
 		"action": leaf.Action,
+		"index1": leaf.Index1,
 	}
-	idx := join(leaf.Indices)
-	val := join(leaf.Values)
-	if len(idx) > 0 {
-		filter["indices"] = idx
-	}
-	if len(val) > 0 {
-		filter["values"] = val
-	}
-	mnode := Mnode{
-		Parent:  parent.ID,
-		Round:   leaf.Round,
-		Turn:    leaf.Turn,
-		Action:  leaf.Action,
-		Indices: join(leaf.Indices),
-		Values:  join(leaf.Values),
-		Runs:    1, // leaf.Runs,
-		Wins:    0, // leaf.Wins,
+	mnode := bson.M{
+		"parent": parent.ID,
+		"round":  leaf.Round,
+		"turn":   leaf.Turn,
+		"action": leaf.Action,
+		"index1": leaf.Index1,
+		// "$inc":   bson.M{"runs": 1}, // leaf.Runs,
+		// Wins:   0,                 // leaf.Wins,
 	}
 	rslt, err := tree.UpdateOne(ctx, filter, bson.M{
 		"$set": mnode,
+		"$inc": bson.M{"runs": 1}, // leaf.Runs,
 	}, options.Update().SetUpsert(true))
 	if err != nil {
 		return nil, err
 	}
 	if rslt.UpsertedID != nil {
 		fmt.Println("New node ID: ", rslt.UpsertedID, " Match count: ", rslt.MatchedCount, " Modify count: ", rslt.ModifiedCount) // TODO TEMP
-		mnode.ID, _ = rslt.UpsertedID.(primitive.ObjectID)
+		return &MNode{
+			ID:     rslt.UpsertedID.(primitive.ObjectID),
+			Parent: parent.ID,
+			Round:  leaf.Round,
+			Turn:   leaf.Turn,
+			Action: leaf.Action,
+			Index1: leaf.Index1,
+		}, nil
 	} else {
 		fmt.Println("Existing node - Match count: ", rslt.MatchedCount, " Modify count: ", rslt.ModifiedCount) // TODO TEMP
 	}
-	return &mnode, nil
+	return &MNode{
+		Parent: parent.ID,
+		Round:  leaf.Round,
+		Turn:   leaf.Turn,
+		Action: leaf.Action,
+		Index1: leaf.Index1,
+	}, nil
 }
 
 // Next search for nodes in the next level of the tree
-func Next(node *Mnode) ([]Mnode, error) {
+func Next(node *MNode) ([]MNode, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -199,9 +215,9 @@ func Next(node *Mnode) ([]Mnode, error) {
 	}
 	defer cursor.Close(ctx)
 
-	result := make([]Mnode, 0)
+	result := make([]MNode, 0)
 	for cursor.Next(ctx) {
-		var next Mnode
+		var next MNode
 		if err = cursor.Decode(&next); err != nil {
 			return nil, err
 		}
@@ -210,13 +226,13 @@ func Next(node *Mnode) ([]Mnode, error) {
 	return result, nil
 }
 
-func join(slice []uint8) string {
-	rst := ""
-	for _, v := range slice {
-		rst += fmt.Sprintf(",%v", v)
-	}
-	if len(rst) > 0 {
-		return rst[1:]
-	}
-	return rst
-}
+// func join(slice []uint8) string {
+// 	rst := ""
+// 	for _, v := range slice {
+// 		rst += fmt.Sprintf(",%v", v)
+// 	}
+// 	if len(rst) > 0 {
+// 		return rst[1:]
+// 	}
+// 	return rst
+// }

@@ -32,13 +32,12 @@ func main() {
 
 	// node, err := mongo.Find(&mongo.Node{
 	node, err := mongo.Add(root, &mongo.Node{
-		Round:   1,
-		Turn:    0,
-		Action:  2,
-		Indices: []uint8{7},
-		Values:  nil,
-		Runs:    0,
-		Wins:    0,
+		Round:  1,
+		Turn:   0,
+		Action: 2,
+		Index1: 7,
+		Runs:   0,
+		Wins:   0,
 	})
 	if err != nil {
 		log.Fatal(err)
