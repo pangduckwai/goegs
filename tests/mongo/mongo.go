@@ -46,14 +46,16 @@ type MNode struct {
 	Wins   uint64             `bson:"wins"`
 }
 
+const url = "mongodb://192.168.56.101:27017"
+
+// const url = "mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority"
+
 // Root read the root node entry from mongodb
 func Root(impl string) (*MNode, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
-		"mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority",
-	))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
 	if err != nil {
 		return nil, err
 	}
@@ -97,9 +99,7 @@ func Root(impl string) (*MNode, error) {
 // 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 // 	defer cancel()
 
-// 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
-// 		"mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority",
-// 	))
+// 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
 // 	if err != nil {
 // 		return nil, err
 // 	}
@@ -138,9 +138,7 @@ func Add(parent *MNode, leaf *Node) (*MNode, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
-		"mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority",
-	))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
 	if err != nil {
 		return nil, err
 	}
@@ -208,9 +206,7 @@ func Next(node *MNode) ([]MNode, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(
-		"mongodb+srv://wdom:oY7v4xeqxO8zDFjz@m0-sea9.7zfms.mongodb.net/mctree?retryWrites=true&w=majority",
-	))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
 	if err != nil {
 		return nil, err
 	}
