@@ -149,30 +149,40 @@ func Add(parent *MNode, leaf *Node) (*MNode, error) {
 	db := client.Database("wdom")
 	tree := db.Collection("mctree")
 
-	filter := bson.M{
+	// mgnode := bson.M{
+	// 	"$set": bson.M{
+	// 		"round":  leaf.Round,
+	// 		"turn":   leaf.Turn,
+	// 		"action": leaf.Action,
+	// 		"index1": leaf.Index1,
+	// 	},
+	// 	"$inc": bson.M{"runs": 1, "wins": 1},
+	// }
+	mgnode := bson.M{
 		"round":  leaf.Round,
 		"turn":   leaf.Turn,
 		"action": leaf.Action,
 		"index1": leaf.Index1,
 	}
-	mnode := bson.M{
-		"parent": parent.ID,
-		"round":  leaf.Round,
-		"turn":   leaf.Turn,
-		"action": leaf.Action,
-		"index1": leaf.Index1,
-		// "$inc":   bson.M{"runs": 1}, // leaf.Runs,
-		// Wins:   0,                 // leaf.Wins,
+
+	incrmt := bson.M{"runs": 1, "wins": 1}
+
+	filter := bson.M{}
+	for k, v := range mgnode {
+		filter[k] = v
 	}
+
+	mgnode["parent"] = parent.ID
+
 	rslt, err := tree.UpdateOne(ctx, filter, bson.M{
-		"$set": mnode,
-		"$inc": bson.M{"runs": 1}, // leaf.Runs,
+		"$set": mgnode,
+		"$inc": incrmt,
 	}, options.Update().SetUpsert(true))
 	if err != nil {
 		return nil, err
 	}
 	if rslt.UpsertedID != nil {
-		fmt.Println("New node ID: ", rslt.UpsertedID, " Match count: ", rslt.MatchedCount, " Modify count: ", rslt.ModifiedCount) // TODO TEMP
+		fmt.Println("New node ID: ", rslt.UpsertedID, " Match count: ", rslt.MatchedCount, " Modify count: ", rslt.ModifiedCount, " Insert count: ", rslt.UpsertedCount) // TODO TEMP
 		return &MNode{
 			ID:     rslt.UpsertedID.(primitive.ObjectID),
 			Parent: parent.ID,
@@ -181,9 +191,9 @@ func Add(parent *MNode, leaf *Node) (*MNode, error) {
 			Action: leaf.Action,
 			Index1: leaf.Index1,
 		}, nil
-	} else {
-		fmt.Println("Existing node - Match count: ", rslt.MatchedCount, " Modify count: ", rslt.ModifiedCount) // TODO TEMP
 	}
+
+	fmt.Println("Existing node - Match count: ", rslt.MatchedCount, " Modify count: ", rslt.ModifiedCount, " Insert count: ", rslt.UpsertedCount) // TODO TEMP
 	return &MNode{
 		Parent: parent.ID,
 		Round:  leaf.Round,

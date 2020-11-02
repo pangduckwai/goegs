@@ -35,7 +35,7 @@ func main() {
 		Round:  1,
 		Turn:   0,
 		Action: 2,
-		Index1: 7,
+		Index1: 21,
 		Runs:   0,
 		Wins:   0,
 	})
