@@ -49,7 +49,7 @@ type Node struct {
 	Value  int     `bson:"v,omitempty"`
 	Data   int     `bson:"d"`
 	Parent *Node   `bson:"-"`
-	Next   []*Node `bson:"n,omitempty"` // Total number of won games of this player
+	Next   []*Node `bson:"n,omitempty"`
 	Level  int     `bson:"-"`
 }
 
