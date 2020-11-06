@@ -47,6 +47,7 @@ type Node struct {
 	ID     string  `bson:"_id,omitempty"` // primitive.ObjectID
 	Ref    string  `bson:"e,omitempty"`   // Reference to a parent node
 	Value  int     `bson:"v,omitempty"`
+	Data   int     `bson:"d"`
 	Parent *Node   `bson:"-"`
 	Next   []*Node `bson:"n,omitempty"` // Total number of won games of this player
 	Level  int     `bson:"-"`
@@ -85,7 +86,7 @@ func show(pfx string, n *Node, idx int, lst int, lvl int, max int) string {
 }
 func toString(n *Node, p int) string {
 	pad := strings.Repeat(".", p)
-	return fmt.Sprintf(" %v. %-11v | %2v| %10v | %v -> %v", pad, n.Value, 10-p, n.Level, n.ID, n.Ref)
+	return fmt.Sprintf(" %v. [ %-11v %4v ] %2v| %10v | %v -> %v", pad, n.Value, n.Data, 10-p, n.Level, n.ID, n.Ref)
 }
 
 func (n *Node) hash() string {
@@ -114,10 +115,52 @@ func Write(root *Node) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println("Update results", i, rst.ModifiedCount, rst.UpsertedCount)
+		fmt.Println("Update results", vertex.ID, i, rst.MatchedCount, rst.ModifiedCount, rst.UpsertedCount)
 	}
 
 	return nil
+}
+
+// Read read from mongodb
+func Read() (*Node, error) {
+	err := connect()
+	if err != nil {
+		return nil, err
+	}
+	defer stop()
+
+	var tree Node
+	if err := coll.FindOne(cntx, bson.M{"_id": "TEST001"}).Decode(&tree); err != nil {
+		return nil, err
+	}
+
+	var node *Node
+	queue := []*Node{&tree}
+	for len(queue) > 0 {
+		node = queue[0]
+
+		if node.Next == nil && node.ID != "" {
+			cursor, err := coll.Find(cntx, bson.M{"e": node.ID})
+			if err != nil {
+				return nil, err
+			}
+			defer cursor.Close(cntx)
+
+			result := make([]*Node, 0)
+			for cursor.Next(cntx) {
+				var read Node
+				if err = cursor.Decode(&read); err != nil {
+					return nil, err
+				}
+				result = append(result, &read)
+			}
+			node.Next = result
+		}
+
+		queue = append(queue[1:], node.Next...)
+	}
+
+	return &tree, nil
 }
 
 // Split split up the tree breadth-first by level
@@ -130,9 +173,9 @@ func Split(tree *Node, depth int) ([]*Node, error) {
 	var nxtLvl int
 	var modlus int
 	maxLvl := depth - 1
+	tree.Level = 0
 
 	var node *Node
-	tree.Level = 0
 	queue := []*Node{tree}
 	for len(queue) > 0 {
 		node = queue[0]
@@ -162,6 +205,65 @@ func Split(tree *Node, depth int) ([]*Node, error) {
 	}
 
 	return vertices, nil
+}
+
+// Change update the tree
+func Change(tree *Node, code int) {
+	find := func(tree *Node, val int) *Node {
+		var node *Node
+		queue := []*Node{tree}
+		for len(queue) > 0 {
+			node = queue[0]
+			queue = append(queue[1:], node.Next...)
+			if node.Value == val {
+				return node
+			}
+		}
+		return nil
+	}
+
+	switch code {
+	case 1:
+		node := find(tree, 1220112)
+		node.Data += 17
+	case 2:
+		node := find(tree, 102)
+		node.Next = []*Node{
+			&Node{Value: 1020, Data: 79, Parent: node, Next: nil},
+		}
+	case 3:
+		node := find(tree, 102)
+		node.Next = append(node.Next, &Node{Value: 1021, Data: 7, Parent: node, Next: nil})
+	}
+}
+
+// Same check if 2 MCTrees are the same
+func Same(tree1, tree2 *Node) bool {
+	build := func(tree *Node) []int {
+		var rst []int
+
+		var node *Node
+		queue := []*Node{tree}
+		for len(queue) > 0 {
+			node = queue[0]
+			queue = append(queue[1:], node.Next...)
+			rst = append(rst, node.Value)
+		}
+		return rst
+	}
+
+	rst1 := build(tree1)
+	rst2 := build(tree2)
+	if len(rst1) != len(rst2) {
+		return false
+	}
+
+	for i := 0; i < len(rst1); i++ {
+		if rst1[i] != rst2[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // Build build the test tree

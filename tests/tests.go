@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"sea9.org/go/tests/mongo"
@@ -23,12 +24,22 @@ func main() {
 	//////////
 	// Mongo
 	//////////
-	tree := mongo.Build()
-	err := mongo.Write(tree)
+	// tree := mongo.Build()
+	// err := mongo.Write(tree)
 	// list, err := mongo.Split(tree, 3)
+	tree, err := mongo.Read()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// mongo.Change(tree, 3)
+	// err = mongo.Write(tree)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	fmt.Println(tree.Tree(10))
+	fmt.Println("Is the same:", mongo.Same(tree, mongo.Build()))
 	// for _, frag := range list {
 	// 	fmt.Println(frag.Tree(3))
 	// }
