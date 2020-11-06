@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"sea9.org/go/tests/mongo"
@@ -24,33 +23,13 @@ func main() {
 	//////////
 	// Mongo
 	//////////
-	root, err := mongo.Root("BSCTTTCCDMT5XT0MTD-6")
+	tree := mongo.Build()
+	err := mongo.Write(tree)
+	// list, err := mongo.Split(tree, 3)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Root: ", *root)
-
-	// node, err := mongo.Find(&mongo.Node{
-	node, err := mongo.Add(root, &mongo.Node{
-		Round:  1,
-		Turn:   0,
-		Action: 2,
-		Index1: 21,
-		Runs:   0,
-		Wins:   0,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	if node == nil {
-		fmt.Println("Not Found")
-	} else {
-		fmt.Println("Node:", node)
-	}
-
-	next, err := mongo.Next(root)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Next: ", next)
+	// for _, frag := range list {
+	// 	fmt.Println(frag.Tree(3))
+	// }
 }
