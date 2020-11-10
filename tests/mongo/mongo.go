@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strings"
 
 	"github.com/google/uuid"
@@ -42,12 +43,26 @@ func connect() error {
 	return nil
 }
 
+/*
+"objects" : 24,
+"avgObjSize" : 228.58333333333334,
+"dataSize" : 5486,
+"storageSize" : 4096,
+
+"objects" : 24,
+"avgObjSize" : 237.95833333333334,
+"dataSize" : 5711,
+"storageSize" : 4096,
+*/
+
 // Node a tree node
 type Node struct {
 	ID     string  `bson:"_id,omitempty"` // primitive.ObjectID
 	Ref    string  `bson:"e,omitempty"`   // Reference to a parent node
 	Value  int     `bson:"v,omitempty"`
 	Data   int     `bson:"d"`
+	Dat1   uint16  `bson:"i"`
+	Dat2   uint16  `bson:"j"`
 	Parent *Node   `bson:"-"`
 	Next   []*Node `bson:"n,omitempty"`
 	Level  int     `bson:"-"`
@@ -205,6 +220,19 @@ func Split(tree *Node, depth int) ([]*Node, error) {
 	}
 
 	return vertices, nil
+}
+
+// Fill fill tree data
+func Fill(tree *Node) {
+	var node *Node
+	queue := []*Node{tree}
+	for len(queue) > 0 {
+		node = queue[0]
+		queue = append(queue[1:], node.Next...)
+
+		node.Dat1 = uint16(rand.Intn(32767))
+		node.Dat2 = uint16(rand.Intn(32767))
+	}
 }
 
 // Change update the tree
