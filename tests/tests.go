@@ -49,6 +49,6 @@ func main() {
 	expands := []uint8{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 
 	for _, x := range expands {
-		fmt.Printf("%2v - %4v\n", x, (2000 / ((int(x) * 3) + 1)))
+		fmt.Printf("%2v - %4v\n", x, (5000 / ((int(x) * 3) + 1)))
 	}
 }
