@@ -2,7 +2,13 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 	//////////////
@@ -49,6 +55,6 @@ func main() {
 	expands := []uint8{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
 
 	for _, x := range expands {
-		fmt.Printf("%2v - %4v\n", x, (5000 / ((int(x) * 3) + 1)))
+		fmt.Printf("%2v - %4v\n%2v - %4v\n", x, rand.Intn(100000), x, (50000 / ((int(x) * 3) + 1))) // 50000 / ((int(x) * 3) + 1)
 	}
 }
