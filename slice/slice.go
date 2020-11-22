@@ -50,16 +50,24 @@ import "fmt"
 // 	// fmt.Println("OH", ss)
 // }
 
-func main() {
-	var s0 []int
-	s1 := []int{1, 2, 3, 4, 5}
-	var s2 []int
-	s3 := []int{6, 7, 8, 9}
+// func main() {
+// 	var s0 []int
+// 	s1 := []int{1, 2, 3, 4, 5}
+// 	var s2 []int
+// 	s3 := []int{6, 7, 8, 9}
 
-	s0 = append(s0, s1...)
-	fmt.Println("1", s0)
-	s0 = append(s0[1:], s2...)
-	fmt.Println("2", s0)
-	s0 = append(s0[1:], s3...)
-	fmt.Println("3", s0)
+// 	s0 = append(s0, s1...)
+// 	fmt.Println("1", s0)
+// 	s0 = append(s0[1:], s2...)
+// 	fmt.Println("2", s0)
+// 	s0 = append(s0[1:], s3...)
+// 	fmt.Println("3", s0)
+// }
+
+func main() {
+	s1 := []int{5, 6, 7, 8}
+	fmt.Println("1", s1[1:])
+
+	s2 := []int{9}
+	fmt.Println("2", s2[1:])
 }
