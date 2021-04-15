@@ -16,8 +16,8 @@ func buildNodes(head *node.Node) {
 	var next *node.Node
 	curr := head
 	curr.Moves = 42
-	curr.Runs = 11
-	curr.Wins = 1
+	curr.Runs = 16
+	curr.Wins = 3
 
 	// 1st level
 	next = node.New(curr, "", 0, 2, []uint8{10}, 0)
@@ -27,7 +27,7 @@ func buildNodes(head *node.Node) {
 
 	next = node.New(curr, "", 0, 2, []uint8{17}, 0)
 	next.Moves = 41
-	next.Runs = 2
+	next.Runs = 7
 	next.Wins = 1
 	curr.Next = append(curr.Next, next)
 
@@ -57,7 +57,15 @@ func buildNodes(head *node.Node) {
 	next = node.New(curr, "", 1, 2, []uint8{5}, 0)
 	next.Moves = 40
 	next.Runs = 1
+	curr.Next = append(curr.Next, next)
+	next = node.New(curr, "", 1, 2, []uint8{9}, 0)
+	next.Moves = 40
+	next.Runs = 4
 	next.Wins = 1
+	curr.Next = append(curr.Next, next)
+	next = node.New(curr, "", 1, 2, []uint8{8}, 0)
+	next.Moves = 40
+	next.Runs = 1
 	curr.Next = append(curr.Next, next)
 
 	curr = head.Next[2]
@@ -77,6 +85,25 @@ func buildNodes(head *node.Node) {
 	next.Moves = 40
 	next.Runs = 1
 	curr.Next = append(curr.Next, next)
+
+	// 3rd level
+	curr = head.Next[1].Next[1]
+	next = node.New(curr, "", 2, 2, []uint8{11}, 0)
+	next.Moves = 39
+	next.Runs = 1
+	next.Wins = 1
+	curr.Next = append(curr.Next, next)
+	next = node.New(curr, "", 2, 2, []uint8{12}, 0)
+	next.Moves = 39
+	next.Runs = 1
+	curr.Next = append(curr.Next, next)
+	next = node.New(curr, "", 2, 2, []uint8{13}, 0)
+	next.Moves = 39
+	next.Runs = 1
+	curr.Next = append(curr.Next, next)
+
+	// 4th level
+	curr = head.Next[1].Next[1].Next[0]
 }
 
 func main() {
