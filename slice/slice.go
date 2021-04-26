@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // type test struct {
 // 	s1 []int
@@ -64,10 +67,100 @@ import "fmt"
 // 	fmt.Println("3", s0)
 // }
 
-func main() {
-	s1 := []int{5, 6, 7, 8}
-	fmt.Println("1", s1[1:])
+// func main() {
+// 	s1 := []int{5, 6, 7, 8}
+// 	fmt.Println("1", s1[1:])
 
-	s2 := []int{9}
-	fmt.Println("2", s2[1:])
+// 	s2 := []int{9}
+// 	fmt.Println("2", s2[1:])
+// }
+
+// Obj Object
+type Obj struct {
+	Name  string
+	Value int
+}
+
+func (a Obj) Less(b Obj) bool {
+	return a.Value < b.Value
+}
+
+func (o Obj) String() string {
+	return fmt.Sprintf("%s", o.Name)
+}
+
+// Objs array of Obj
+type Objs []Obj
+
+func (o Objs) Len() int {
+	return len(o)
+}
+func (o Objs) Swap(i, j int) {
+	o[i], o[j] = o[j], o[i]
+}
+func (o Objs) Less(i, j int) bool {
+	return o[i].Less(o[j])
+}
+
+// Find find an element in a slice
+func Find(list []Obj, item Obj) (found bool, idx int) {
+	lgt := len(list)
+	idx = sort.Search(
+		lgt,
+		func(i int) bool {
+			return !list[i].Less(item) // list[i].Value >= item.Value
+		},
+	)
+	found = (idx < lgt) && (list[idx].Value == item.Value)
+	return
+}
+
+func Insert(list []Obj, item Obj, index int) []Obj {
+	lgt := len(list)
+	if index >= lgt {
+		return append(list, item)
+	}
+	list = append(list[:index+1], list[index:]...)
+	list[index] = item
+	return list
+}
+
+func main() {
+	s := []Obj{
+		{"you", 17},
+		{"there", 3},
+		{"today", 19},
+		{"hello", 2},
+		{"are", 13},
+	}
+
+	fmt.Println(s)
+	sort.Sort(Objs(s))
+	fmt.Println(s)
+	fmt.Println()
+
+	t := Obj{"how", 11}
+	u := Obj{"are", 13}
+	v := Obj{"?", 21}
+
+	if f, i := Find(s, t); !f {
+		s = Insert(s, t, i)
+		fmt.Printf("%v -- %v\n", t, s)
+	} else {
+		fmt.Printf("%v already exists at %v\n", t, i)
+	}
+
+	if f, i := Find(s, u); !f {
+		s = Insert(s, u, i)
+		fmt.Printf("%v -- %v\n", u, s)
+	} else {
+		fmt.Printf("%v already exists at %v\n", u, i)
+	}
+
+	if f, i := Find(s, v); !f {
+		s = Insert(s, v, i)
+		fmt.Printf("%v -- %v\n", v, s)
+	} else {
+		fmt.Printf("%v already exists at %v\n", v, i)
+	}
 }
