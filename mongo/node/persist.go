@@ -25,16 +25,18 @@ import (
 // db.runCommand({dropIndexes: "mctree", index: "p_1"})
 /////////////////////////////////////////////////////////////////////////////
 
-var conn bool
-var mngo *mongo.Database
-var coll *mongo.Collection
+var isConn bool
+
+// var mngo *mongo.Database
+// var coll *mongo.Collection
+var conn *mongo.Client
 var cntx context.Context
 
 // Stop clean up connection
 var Stop func()
 
 // Connect connect to a mongo database
-func Connect(url string, database string, collection string) error {
+func Connect(url string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(url))
 	if err != nil {
@@ -43,21 +45,32 @@ func Connect(url string, database string, collection string) error {
 	}
 
 	cntx = ctx
-	mngo = client.Database(database)
-	coll = mngo.Collection(collection)
+	conn = client
+	// mngo = client.Database(database)
+	// coll = mngo.Collection(collection)
 
 	Stop = func() {
 		defer cancel()
 		defer client.Disconnect(ctx)
-		conn = false
+		isConn = false
 	}
-	conn = true
+	isConn = true
 	return nil
 }
 
 // Connected check if mongo connection is ready
 func Connected() bool {
-	return conn
+	return isConn
+}
+
+// Collection get collection from the active mongodb connection
+func Collection(database string, collection string) (*mongo.Collection, error) {
+	if !isConn {
+		return nil, Err(0)
+	}
+
+	mngo := conn.Database(database)
+	return mngo.Collection(collection), nil
 }
 
 // NOTE!!!!! split is "destructive" because in order to properly save document to mongo, the tree
@@ -136,8 +149,8 @@ func split(tree *Node) ([]*Node, error) {
 }
 
 // Write write to mongodb
-func Write(node *Node) ([]*Node, int64, int64, int64, int64, time.Duration, error) {
-	if !conn {
+func Write(coll *mongo.Collection, node *Node) ([]*Node, int64, int64, int64, int64, time.Duration, error) {
+	if !isConn {
 		return nil, 0, 0, 0, 0, 0, Err(0)
 	}
 
@@ -146,7 +159,7 @@ func Write(node *Node) ([]*Node, int64, int64, int64, int64, time.Duration, erro
 		return nil, 0, 0, 0, 0, 0, err
 	}
 
-	matchedCount, modifiedCount, upsertedCount, elapsed, err := WriteNodes(vertices)
+	matchedCount, modifiedCount, upsertedCount, elapsed, err := WriteNodes(coll, vertices)
 	if err != nil {
 		return nil, 0, 0, 0, 0, 0, err
 	}
@@ -154,8 +167,8 @@ func Write(node *Node) ([]*Node, int64, int64, int64, int64, time.Duration, erro
 }
 
 // WriteNodes write given nodes
-func WriteNodes(vertices []*Node) (matchedCount, modifiedCount, upsertedCount int64, elapsed time.Duration, err error) {
-	if !conn {
+func WriteNodes(coll *mongo.Collection, vertices []*Node) (matchedCount, modifiedCount, upsertedCount int64, elapsed time.Duration, err error) {
+	if !isConn {
 		return 0, 0, 0, 0, Err(0)
 	}
 
@@ -189,8 +202,8 @@ func WriteNodes(vertices []*Node) (matchedCount, modifiedCount, upsertedCount in
 }
 
 // Root read tree from mongo
-func Root(impl string, createIfNotFound bool) (*Node, time.Duration, error) {
-	if !conn {
+func Root(coll *mongo.Collection, impl string, createIfNotFound bool) (*Node, time.Duration, error) {
+	if !isConn {
 		return nil, 0, Err(0)
 	}
 	if impl == "" {
@@ -210,8 +223,8 @@ func Root(impl string, createIfNotFound bool) (*Node, time.Duration, error) {
 }
 
 // Read read node by reference
-func Read(oid primitive.ObjectID) (*Node, time.Duration, error) {
-	if !conn {
+func Read(coll *mongo.Collection, oid primitive.ObjectID) (*Node, time.Duration, error) {
+	if !isConn {
 		return nil, 0, Err(0)
 	}
 	if oid == primitive.NilObjectID {
@@ -226,8 +239,8 @@ func Read(oid primitive.ObjectID) (*Node, time.Duration, error) {
 }
 
 // Next read next level tree but return the parent
-func Next(node *Node) (*Node, int, time.Duration, error) {
-	if !conn {
+func Next(coll *mongo.Collection, node *Node) (*Node, int, time.Duration, error) {
+	if !isConn {
 		return nil, 0, 0, Err(0)
 	}
 	if node == nil {
@@ -262,7 +275,7 @@ func Next(node *Node) (*Node, int, time.Duration, error) {
 
 // Walk walk the entire tree stored in mongo. Note this won't build the entire tree,
 // instead return all vertices (a vertex is a sub-tree stored as a separate document in mongo)
-func Walk(tree *Node) ([]*Node, error) {
+func Walk(coll *mongo.Collection, tree *Node) ([]*Node, error) {
 	now := time.Now()
 	var node *Node
 	queue := []*Node{tree}
@@ -275,7 +288,7 @@ func Walk(tree *Node) ([]*Node, error) {
 		ncnt++
 
 		if node.Next == nil && node.ID != primitive.NilObjectID {
-			node, _, _, err := Next(node)
+			node, _, _, err := Next(coll, node)
 			if err != nil {
 				return nil, err
 			}

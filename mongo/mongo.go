@@ -10,26 +10,20 @@ import (
 
 const impl = "BSCTTTCCDMT5XT0MTD-6"
 const monurl = "mongodb://192.168.56.31:27017"
-const mondb = "test"
-const moncoll = "mct"
+const dbsrc = "test1"
+const dbtgt = "test"
+const colsrc = "mct"
+const coltgt = "mct"
 
-func main() {
-	fmt.Println("[MONGO-TEST]######################################################")
-	fmt.Printf("[MONGO-TEST] Connecting to %v %v.%v\n", monurl, mondb, moncoll)
-
-	// Connect to mongo
-	err := node.Connect(monurl, mondb, moncoll)
+func walk(database string, collection string) {
+	fmt.Printf("[MONGO-TEST] %v.%v\n", database, collection)
+	coll, err := node.Collection(database, collection)
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer node.Stop()
-
-	if !node.Connected() {
-		log.Fatal("[Error] Connection failed")
+		log.Fatalf("[Error] %v\n", err)
 	}
 
 	// Read existing nodes
-	head, elapsed, err := node.Root(impl, true)
+	head, elapsed, err := node.Root(coll, impl, false)
 	if err != nil {
 		log.Fatalf("[Error] %v\n", err)
 	}
@@ -42,7 +36,7 @@ func main() {
 		curr = queue[0]
 
 		if curr.Next == nil && curr.ID != primitive.NilObjectID {
-			_, _, _, err := node.Next(curr)
+			_, _, _, err := node.Next(coll, curr)
 			if err != nil {
 				log.Fatalf("[Error] %v\n", err)
 			}
@@ -53,9 +47,59 @@ func main() {
 
 	if valid, count := node.Validate(head); valid {
 		fmt.Printf("[MONGO-TEST] Validated %v nodes: okay\n", count)
-		fmt.Println(head.Tree(50, 0))
+		fmt.Println(head.Tree(10, 0))
 	} else {
-		fmt.Println(head.Tree(50, 0))
+		fmt.Println(head.Tree(10, 0))
 		log.Fatal("[Error] Validation failed")
 	}
+}
+
+// func merge() {
+// 	collSrc, err := node.Collection(dbsrc, colsrc)
+// 	if err != nil {
+// 		log.Fatalf("[Error] %v\n", err)
+// 	}
+// 	headSrc, _, err := node.Root(collSrc, impl, false)
+// 	if err != nil {
+// 		log.Fatalf("[Error] %v\n", err)
+// 	}
+// 	var currSrc *node.Node
+// 	queSrc := []*node.Node{headSrc}
+
+// 	collTgt, err := node.Collection(dbtgt, coltgt)
+// 	if err != nil {
+// 		log.Fatalf("[Error] %v\n", err)
+// 	}
+// 	headTgt, _, err := node.Root(collTgt, impl, false)
+// 	var currTgt *node.Node
+// 	queTgt := []*node.Node{headTgt}
+
+// 	for len(queSrc) > 0 && len(queTgt) > 0 {
+// 		currSrc = queSrc[0]
+// 		currTgt = queTgt[0]
+
+// 		fmt.Printf("Source: %v\n", currSrc)
+// 		fmt.Printf("Target: %v\n", currTgt)
+
+// 		queSrc = append(queSrc[1:], cu)
+// 	}
+// }
+
+func main() {
+	fmt.Println("[MONGO-TEST]######################################################")
+	fmt.Printf("[MONGO-TEST] Connecting to %v %v.%v -> %v.%v\n", monurl, dbsrc, colsrc, dbtgt, coltgt)
+
+	// Connect to mongo
+	err := node.Connect(monurl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer node.Stop()
+
+	if !node.Connected() {
+		log.Fatal("[Error] Connection failed")
+	}
+
+	walk(dbtgt, coltgt)
+	walk(dbsrc, colsrc)
 }
