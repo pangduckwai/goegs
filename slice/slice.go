@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"time"
 )
 
 // type test struct {
@@ -143,6 +144,7 @@ func main() {
 	u := Obj{"are", 13}
 	v := Obj{"?", 21}
 
+	start1 := time.Now()
 	if f, i := Find(s, t); !f {
 		s = Insert(s, t, i)
 		fmt.Printf("%v -- %v\n", t, s)
@@ -150,6 +152,8 @@ func main() {
 		fmt.Printf("%v already exists at %v\n", t, i)
 	}
 
+	start2 := time.Now()
+	find1 := start2.Sub(start1)
 	if f, i := Find(s, u); !f {
 		s = Insert(s, u, i)
 		fmt.Printf("%v -- %v\n", u, s)
@@ -157,10 +161,15 @@ func main() {
 		fmt.Printf("%v already exists at %v\n", u, i)
 	}
 
+	start3 := time.Now()
+	find2 := start3.Sub(start2)
 	if f, i := Find(s, v); !f {
 		s = Insert(s, v, i)
 		fmt.Printf("%v -- %v\n", v, s)
 	} else {
 		fmt.Printf("%v already exists at %v\n", v, i)
 	}
+	find3 := time.Now().Sub(start3)
+
+	fmt.Printf("Elapsed: %v %v %v -- %v", find1, find2, find3, find1+find2+find3)
 }
