@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
-	"time"
 )
 
 // type test struct {
@@ -76,100 +74,127 @@ import (
 // 	fmt.Println("2", s2[1:])
 // }
 
-// Obj Object
-type Obj struct {
-	Name  string
-	Value int
-}
-
-func (a Obj) Less(b Obj) bool {
-	return a.Value < b.Value
-}
-
-func (o Obj) String() string {
-	return fmt.Sprintf("%s", o.Name)
-}
-
-// Objs array of Obj
-type Objs []Obj
-
-func (o Objs) Len() int {
-	return len(o)
-}
-func (o Objs) Swap(i, j int) {
-	o[i], o[j] = o[j], o[i]
-}
-func (o Objs) Less(i, j int) bool {
-	return o[i].Less(o[j])
-}
-
-// Find find an element in a slice
-func Find(list []Obj, item Obj) (found bool, idx int) {
-	lgt := len(list)
-	idx = sort.Search(
-		lgt,
-		func(i int) bool {
-			return !list[i].Less(item) // list[i].Value >= item.Value
-		},
-	)
-	found = (idx < lgt) && (list[idx].Value == item.Value)
-	return
-}
-
-func Insert(list []Obj, item Obj, index int) []Obj {
-	lgt := len(list)
-	if index >= lgt {
-		return append(list, item)
-	}
-	list = append(list[:index+1], list[index:]...)
-	list[index] = item
-	return list
-}
-
 func main() {
-	s := []Obj{
-		{"you", 17},
-		{"there", 3},
-		{"today", 19},
-		{"hello", 2},
-		{"are", 13},
+	s := []int{5, 6, 7, 8, 9, 10, 11, 12}
+	t := 5
+	u := 8
+	v := 9
+	w := 12
+
+	fmt.Println(s)
+
+	for i := 0; i < len(s); i++ {
+		fmt.Printf("Hello %v\n", s[i])
+		l := len(s) - 1
+		if s[i] == t || s[i] == u || s[i] == v || s[i] == w {
+			if i < 1 {
+				s = s[i+1:]
+			} else if i >= l {
+				s = s[:l]
+			} else {
+				s = append(s[:i], s[i+1:]...)
+			}
+			i--
+		}
 	}
 
 	fmt.Println(s)
-	sort.Sort(Objs(s))
-	fmt.Println(s)
-	fmt.Println()
-
-	t := Obj{"how", 11}
-	u := Obj{"are", 13}
-	v := Obj{"?", 21}
-
-	start1 := time.Now()
-	if f, i := Find(s, t); !f {
-		s = Insert(s, t, i)
-		fmt.Printf("%v -- %v\n", t, s)
-	} else {
-		fmt.Printf("%v already exists at %v\n", t, i)
-	}
-
-	start2 := time.Now()
-	find1 := start2.Sub(start1)
-	if f, i := Find(s, u); !f {
-		s = Insert(s, u, i)
-		fmt.Printf("%v -- %v\n", u, s)
-	} else {
-		fmt.Printf("%v already exists at %v\n", u, i)
-	}
-
-	start3 := time.Now()
-	find2 := start3.Sub(start2)
-	if f, i := Find(s, v); !f {
-		s = Insert(s, v, i)
-		fmt.Printf("%v -- %v\n", v, s)
-	} else {
-		fmt.Printf("%v already exists at %v\n", v, i)
-	}
-	find3 := time.Now().Sub(start3)
-
-	fmt.Printf("Elapsed: %v %v %v -- %v", find1, find2, find3, find1+find2+find3)
 }
+
+// Obj Object
+// type Obj struct {
+// 	Name  string
+// 	Value int
+// }
+
+// func (a Obj) Less(b Obj) bool {
+// 	return a.Value < b.Value
+// }
+
+// func (o Obj) String() string {
+// 	return fmt.Sprintf("%s", o.Name)
+// }
+
+// // Objs array of Obj
+// type Objs []Obj
+
+// func (o Objs) Len() int {
+// 	return len(o)
+// }
+// func (o Objs) Swap(i, j int) {
+// 	o[i], o[j] = o[j], o[i]
+// }
+// func (o Objs) Less(i, j int) bool {
+// 	return o[i].Less(o[j])
+// }
+
+// // Find find an element in a slice
+// func Find(list []Obj, item Obj) (found bool, idx int) {
+// 	lgt := len(list)
+// 	idx = sort.Search(
+// 		lgt,
+// 		func(i int) bool {
+// 			return !list[i].Less(item) // list[i].Value >= item.Value
+// 		},
+// 	)
+// 	found = (idx < lgt) && (list[idx].Value == item.Value)
+// 	return
+// }
+
+// func Insert(list []Obj, item Obj, index int) []Obj {
+// 	lgt := len(list)
+// 	if index >= lgt {
+// 		return append(list, item)
+// 	}
+// 	list = append(list[:index+1], list[index:]...)
+// 	list[index] = item
+// 	return list
+// }
+
+// func main() {
+// 	s := []Obj{
+// 		{"you", 17},
+// 		{"there", 3},
+// 		{"today", 19},
+// 		{"hello", 2},
+// 		{"are", 13},
+// 	}
+
+// 	fmt.Println(s)
+// 	sort.Sort(Objs(s))
+// 	fmt.Println(s)
+// 	fmt.Println()
+
+// 	t := Obj{"how", 11}
+// 	u := Obj{"are", 13}
+// 	v := Obj{"?", 21}
+
+// 	start1 := time.Now()
+// 	if f, i := Find(s, t); !f {
+// 		s = Insert(s, t, i)
+// 		fmt.Printf("%v -- %v\n", t, s)
+// 	} else {
+// 		fmt.Printf("%v already exists at %v\n", t, i)
+// 	}
+
+// 	start2 := time.Now()
+// 	find1 := start2.Sub(start1)
+// 	if f, i := Find(s, u); !f {
+// 		s = Insert(s, u, i)
+// 		fmt.Printf("%v -- %v\n", u, s)
+// 	} else {
+// 		fmt.Printf("%v already exists at %v\n", u, i)
+// 	}
+
+// 	start3 := time.Now()
+// 	find2 := start3.Sub(start2)
+// 	if f, i := Find(s, v); !f {
+// 		s = Insert(s, v, i)
+// 		fmt.Printf("%v -- %v\n", v, s)
+// 	} else {
+// 		fmt.Printf("%v already exists at %v\n", v, i)
+// 	}
+// 	find3 := time.Now().Sub(start3)
+
+// 	fmt.Printf("Elapsed: %v %v %v -- %v", find1, find2, find3, find1+find2+find3)
+// }
