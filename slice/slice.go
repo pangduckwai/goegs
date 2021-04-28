@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 // type test struct {
@@ -74,31 +75,49 @@ import (
 // 	fmt.Println("2", s2[1:])
 // }
 
-func main() {
-	s := []int{5, 6, 7, 8, 9, 10, 11, 12}
-	t := 5
-	u := 8
-	v := 9
-	w := 12
+func filter(src []int, indices []int) []int {
+	rst := make([]int, len(src))
+	copy(rst, src)
+	idx := sort.IntSlice(indices)
+	off := 0
+	idx.Sort()
 
-	fmt.Println(s)
-
-	for i := 0; i < len(s); i++ {
-		fmt.Printf("Hello %v\n", s[i])
-		l := len(s) - 1
-		if s[i] == t || s[i] == u || s[i] == v || s[i] == w {
-			if i < 1 {
-				s = s[i+1:]
-			} else if i >= l {
-				s = s[:l]
-			} else {
-				s = append(s[:i], s[i+1:]...)
-			}
-			i--
+	for _, i := range idx {
+		l := len(rst) - 1
+		j := i - off
+		fmt.Printf("Remove: %v, %v : %v\n", i, j, rst)
+		if j == 0 {
+			rst = rst[1:]
+			off++
+		} else if j == l {
+			rst = rst[:l]
+			off++
+		} else if j > 0 && j < l {
+			rst = append(rst[:j], rst[j+1:]...)
+			off++
 		}
 	}
 
+	return rst
+}
+
+func main() {
+	// s := []int{5, 6, 7, 8, 9, 10, 11, 12}
+	// t := sort.IntSlice([]int{4, 3, 7, 0}) // 9, 8, 12, 5
+	s := []int{45, 97}
+	t := []int{0, 1}
+
+	fmt.Println("B4:")
+	fmt.Println(t)
 	fmt.Println(s)
+	fmt.Println()
+
+	z := filter(s, t)
+
+	fmt.Println("\nAfter:")
+	fmt.Println(t)
+	fmt.Println(s)
+	fmt.Println(z)
 }
 
 // Obj Object
