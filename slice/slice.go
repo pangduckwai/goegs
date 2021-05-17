@@ -2,56 +2,58 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
-// type test struct {
-// 	s1 []int
-// 	s2 []int
-// 	s3 []int
-// 	s4 []int
-// 	s5 []int
-// }
+type test struct {
+	s1 []uint64
+	s2 []int
+	s3 []int
+	s4 []int
+	s5 []int
+}
 
-// func main() {
-// 	s3 := make([]int, 5)
-// 	for i := range s3 {
-// 		s3[i] = i
-// 	}
-// 	s4 := []int{5, 4, 3, 2, 1}
+func main() {
+	s3 := make([]int, 5)
+	for i := range s3 {
+		s3[i] = i
+	}
+	s4 := []int{5, 4, 3, 2, 1}
 
-// 	t := test{
-// 		make([]int, 3),
-// 		nil,
-// 		s3,
-// 		s4,
-// 		make([]int, 0),
-// 	}
+	t := test{
+		make([]uint64, 3),
+		nil,
+		s3,
+		s4,
+		make([]int, 0),
+	}
 
-// 	fmt.Println(t.s1)
-// 	fmt.Println(t.s2)
-// 	fmt.Println(t.s3)
-// 	fmt.Println(t.s4)
-// 	fmt.Println(t.s5)
+	fmt.Println(t.s1)
+	fmt.Println(t.s2)
+	fmt.Println(t.s3)
+	fmt.Println(t.s4)
+	fmt.Println(t.s5)
 
-// 	fmt.Println(len(t.s2))
-// 	fmt.Println(len(t.s5))
+	t.s1[2] = 3
+	fmt.Println(t.s1)
 
-// 	for i := 1; i <= 3; i++ {
-// 		t.s2 = append(t.s2, i*2)
-// 	}
-// 	fmt.Println(t.s2)
-// 	fmt.Println()
+	// fmt.Println(len(t.s2))
+	// fmt.Println(len(t.s5))
 
-// 	ss := []int{1, 2}
-// 	fmt.Println("OH", ss)
-// 	ss = ss[1:]
-// 	fmt.Println("OH", ss)
-// 	ss = ss[1:]
-// 	fmt.Println("OH", ss)
-// 	// ss = ss[1:]
-// 	// fmt.Println("OH", ss)
-// }
+	// for i := 1; i <= 3; i++ {
+	// 	t.s2 = append(t.s2, i*2)
+	// }
+	// fmt.Println(t.s2)
+	// fmt.Println()
+
+	// 	ss := []int{1, 2}
+	// 	fmt.Println("OH", ss)
+	// 	ss = ss[1:]
+	// 	fmt.Println("OH", ss)
+	// 	ss = ss[1:]
+	// 	fmt.Println("OH", ss)
+	// 	// ss = ss[1:]
+	// 	// fmt.Println("OH", ss)
+}
 
 // func main() {
 // 	var s0 []int
@@ -75,50 +77,52 @@ import (
 // 	fmt.Println("2", s2[1:])
 // }
 
-func filter(src []int, indices []int) []int {
-	rst := make([]int, len(src))
-	copy(rst, src)
-	idx := sort.IntSlice(indices)
-	off := 0
-	idx.Sort()
+// func filter(src []int, indices []int) []int {
+// 	rst := make([]int, len(src))
+// 	copy(rst, src)
+// 	idx := sort.IntSlice(indices)
+// 	off := 0
+// 	idx.Sort()
 
-	for _, i := range idx {
-		l := len(rst) - 1
-		j := i - off
-		fmt.Printf("Remove: %v, %v : %v\n", i, j, rst)
-		if j == 0 {
-			rst = rst[1:]
-			off++
-		} else if j == l {
-			rst = rst[:l]
-			off++
-		} else if j > 0 && j < l {
-			rst = append(rst[:j], rst[j+1:]...)
-			off++
-		}
-	}
+// 	for _, i := range idx {
+// 		l := len(rst) - 1
+// 		j := i - off
+// 		fmt.Printf("Remove: %v, %v : %v\n", i, j, rst)
+// 		if j == 0 {
+// 			rst = rst[1:]
+// 			off++
+// 		} else if j == l {
+// 			rst = rst[:l]
+// 			off++
+// 		} else if j > 0 && j < l {
+// 			rst = append(rst[:j], rst[j+1:]...)
+// 			off++
+// 		}
+// 	}
 
-	return rst
-}
+// 	return rst
+// }
 
-func main() {
-	// s := []int{5, 6, 7, 8, 9, 10, 11, 12}
-	// t := sort.IntSlice([]int{4, 3, 7, 0}) // 9, 8, 12, 5
-	s := []int{45, 97}
-	t := []int{0, 1}
+// func main() {
+// 	fmt.Printf("%v\n%v\n", )
 
-	fmt.Println("B4:")
-	fmt.Println(t)
-	fmt.Println(s)
-	fmt.Println()
+// s := []int{5, 6, 7, 8, 9, 10, 11, 12}
+// t := sort.IntSlice([]int{4, 3, 7, 0}) // 9, 8, 12, 5
+// 	s := []int{45, 97}
+// 	t := []int{0, 1}
 
-	z := filter(s, t)
+// 	fmt.Println("B4:")
+// 	fmt.Println(t)
+// 	fmt.Println(s)
+// 	fmt.Println()
 
-	fmt.Println("\nAfter:")
-	fmt.Println(t)
-	fmt.Println(s)
-	fmt.Println(z)
-}
+// 	z := filter(s, t)
+
+// 	fmt.Println("\nAfter:")
+// 	fmt.Println(t)
+// 	fmt.Println(s)
+// 	fmt.Println(z)
+// }
 
 // Obj Object
 // type Obj struct {
