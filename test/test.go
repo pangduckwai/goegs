@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"os"
-	"strconv"
+	"sync"
 	"time"
 )
 
@@ -13,44 +12,44 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-var holdings = []uint8{
-	0, 1, 2, 3, 4, 5,
-	1, 2, 3, 4, 5, 0,
-	2, 3, 4, 5, 0, 1,
-	3, 4, 5, 0, 1, 2,
-	4, 5, 0, 1, 2, 3,
-	5, 0, 1, 2, 3, 4,
-	0, 1, 2, 3, 4, 5,
-}
+// var holdings = []uint8{
+// 	0, 1, 2, 3, 4, 5,
+// 	1, 2, 3, 4, 5, 0,
+// 	2, 3, 4, 5, 0, 1,
+// 	3, 4, 5, 0, 1, 2,
+// 	4, 5, 0, 1, 2, 3,
+// 	5, 0, 1, 2, 3, 4,
+// 	0, 1, 2, 3, 4, 5,
+// }
 
-func dominion(p uint8) []uint8 {
-	r := make([]uint8, 42)
-	i := 0
-	for j, o := range holdings {
-		if o == p {
-			r[i] = uint8(j)
-			i++
-		}
-	}
-	return r[:i]
-}
+// func dominion(p uint8) []uint8 {
+// 	r := make([]uint8, 42)
+// 	i := 0
+// 	for j, o := range holdings {
+// 		if o == p {
+// 			r[i] = uint8(j)
+// 			i++
+// 		}
+// 	}
+// 	return r[:i]
+// }
 
-func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Usage: test {num}")
-	}
-	num, err := strconv.Atoi(os.Args[1])
-	if err != nil {
-		log.Fatal(err)
-	}
+// func main() {
+// 	if len(os.Args) != 2 {
+// 		log.Fatal("Usage: test {num}")
+// 	}
+// 	num, err := strconv.Atoi(os.Args[1])
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	d := dominion(uint8(num))
-	d = nil
-	fmt.Println(d)
-	for _, j := range rand.Perm(len(d)) {
-		fmt.Println(" ", j, d[j])
-	}
-}
+// 	d := dominion(uint8(num))
+// 	d = nil
+// 	fmt.Println(d)
+// 	for _, j := range rand.Perm(len(d)) {
+// 		fmt.Println(" ", j, d[j])
+// 	}
+// }
 
 /*
 func (g *Game) Dominion(p uint8) []uint8 {
@@ -95,3 +94,74 @@ main._simulate.func1(0xc0002da000, 0xc134f76780, 0xc070a12948, 0x16, 0x1b8, 0xc0
 created by main._simulate
         /home/paul_lai/go/wdom-mc/simulation.go:227 +0x270
 */
+
+// func main() {
+// 	n := 0
+// 	v := math.Log(float64(n))
+// 	fmt.Println("Log", n, "is", v)
+// }
+
+// func main() {
+// 	buf := []uint8{1, 2, 3, 4, 5, 6, 7}
+// 	fmt.Println(buf)
+
+// 	for j, v := range buf {
+// 		if v == 0 {
+// 			buf = append([]uint8{v}, append(buf[:j], buf[j+1:]...)...)
+// 			break
+// 		}
+// 	}
+
+// 	fmt.Println(buf)
+// }
+
+func main() {
+	quit, sims := make(chan string), make(chan string)
+	var wgrp sync.WaitGroup
+	n := rand.Intn(10)
+	fmt.Println("Choice", n)
+
+	wgrp.Add(1)
+	go func() {
+		defer wgrp.Done()
+		time.Sleep(8 * time.Second)
+		sims <- fmt.Sprintf("run %vs", 8)
+	}()
+
+	wgrp.Add(1)
+	go func() {
+		defer wgrp.Done()
+		time.Sleep(3 * time.Second)
+		sims <- fmt.Sprintf("run %vs", 3)
+	}()
+
+	wgrp.Add(1)
+	go func() {
+		time.Sleep(4 * time.Second)
+		if n > 5 {
+			quit <- "QUIT"
+		} else {
+			defer wgrp.Done()
+			sims <- fmt.Sprintf("run %vs", 4)
+		}
+	}()
+
+	go func() {
+		defer close(quit)
+		wgrp.Wait()
+	}()
+
+wait:
+	for {
+		select {
+		case msg := <-sims:
+			fmt.Println(msg)
+		case msg := <-quit:
+			if msg != "" {
+				log.Println(msg)
+			}
+			break wait
+		}
+	}
+	fmt.Println("The End!")
+}
