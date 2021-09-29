@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
-	"sync"
 	"time"
 )
 
@@ -115,53 +113,83 @@ created by main._simulate
 // 	fmt.Println(buf)
 // }
 
+// func main() {
+// 	quit, sims := make(chan string), make(chan string)
+// 	var wgrp sync.WaitGroup
+// 	n := rand.Intn(10)
+// 	fmt.Println("Choice", n)
+
+// 	wgrp.Add(1)
+// 	go func() {
+// 		defer wgrp.Done()
+// 		time.Sleep(8 * time.Second)
+// 		sims <- fmt.Sprintf("run %vs", 8)
+// 	}()
+
+// 	wgrp.Add(1)
+// 	go func() {
+// 		defer wgrp.Done()
+// 		time.Sleep(3 * time.Second)
+// 		sims <- fmt.Sprintf("run %vs", 3)
+// 	}()
+
+// 	wgrp.Add(1)
+// 	go func() {
+// 		time.Sleep(4 * time.Second)
+// 		if n > 5 {
+// 			quit <- "QUIT"
+// 		} else {
+// 			defer wgrp.Done()
+// 			sims <- fmt.Sprintf("run %vs", 4)
+// 		}
+// 	}()
+
+// 	go func() {
+// 		defer close(quit)
+// 		wgrp.Wait()
+// 	}()
+
+// wait:
+// 	for {
+// 		select {
+// 		case msg := <-sims:
+// 			fmt.Println(msg)
+// 		case msg := <-quit:
+// 			if msg != "" {
+// 				log.Println(msg)
+// 			}
+// 			break wait
+// 		}
+// 	}
+// 	fmt.Println("The End!")
+// }
+
+type node struct {
+	values uint32
+}
+
+func (n *node) value1() uint16 {
+	return uint16(n.values & 0x0000FFFF)
+}
+
+func (n *node) setValue1(v uint16) {
+	n.values = n.values | uint32(v)
+}
+
+func (n *node) value2() uint16 {
+	return uint16((n.values & 0xFFFF0000) >> 16)
+}
+
+func (n *node) setValue2(v uint16) {
+	n.values = n.values | (uint32(v) << 16)
+}
+
 func main() {
-	quit, sims := make(chan string), make(chan string)
-	var wgrp sync.WaitGroup
-	n := rand.Intn(10)
-	fmt.Println("Choice", n)
+	n := &node{}
+	n.setValue1(7890)
+	n.setValue2(65534)
 
-	wgrp.Add(1)
-	go func() {
-		defer wgrp.Done()
-		time.Sleep(8 * time.Second)
-		sims <- fmt.Sprintf("run %vs", 8)
-	}()
-
-	wgrp.Add(1)
-	go func() {
-		defer wgrp.Done()
-		time.Sleep(3 * time.Second)
-		sims <- fmt.Sprintf("run %vs", 3)
-	}()
-
-	wgrp.Add(1)
-	go func() {
-		time.Sleep(4 * time.Second)
-		if n > 5 {
-			quit <- "QUIT"
-		} else {
-			defer wgrp.Done()
-			sims <- fmt.Sprintf("run %vs", 4)
-		}
-	}()
-
-	go func() {
-		defer close(quit)
-		wgrp.Wait()
-	}()
-
-wait:
-	for {
-		select {
-		case msg := <-sims:
-			fmt.Println(msg)
-		case msg := <-quit:
-			if msg != "" {
-				log.Println(msg)
-			}
-			break wait
-		}
-	}
-	fmt.Println("The End!")
+	v1 := n.value1()
+	v2 := n.value2()
+	fmt.Printf("%v: 1:%v / 2:%v", n.values, v1, v2)
 }
