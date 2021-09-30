@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -164,32 +165,39 @@ created by main._simulate
 // 	fmt.Println("The End!")
 // }
 
-type node struct {
-	values uint32
-}
+// type node struct {
+// 	values uint32
+// }
 
-func (n *node) value1() uint16 {
-	return uint16(n.values & 0x0000FFFF)
-}
+// func (n *node) value1() uint16 {
+// 	return uint16(n.values & 0x0000FFFF)
+// }
 
-func (n *node) setValue1(v uint16) {
-	n.values = n.values | uint32(v)
-}
+// func (n *node) setValue1(v uint16) {
+// 	n.values = n.values | uint32(v)
+// }
 
-func (n *node) value2() uint16 {
-	return uint16((n.values & 0xFFFF0000) >> 16)
-}
+// func (n *node) value2() uint16 {
+// 	return uint16((n.values & 0xFFFF0000) >> 16)
+// }
 
-func (n *node) setValue2(v uint16) {
-	n.values = n.values | (uint32(v) << 16)
-}
+// func (n *node) setValue2(v uint16) {
+// 	n.values = n.values | (uint32(v) << 16)
+// }
+
+// func main() {
+// 	n := &node{}
+// 	n.setValue1(7890)
+// 	n.setValue2(65534)
+
+// 	v1 := n.value1()
+// 	v2 := n.value2()
+// 	fmt.Printf("%v: 1:%v / 2:%v", n.values, v1, v2)
+// }
 
 func main() {
-	n := &node{}
-	n.setValue1(7890)
-	n.setValue2(65534)
-
-	v1 := n.value1()
-	v2 := n.value2()
-	fmt.Printf("%v: 1:%v / 2:%v", n.values, v1, v2)
+	v := []uint8{4, 3, 5, 8, 1, 7, 2}
+	w := strings.Replace(fmt.Sprintf("%v", v), " ", ",", -1)
+	fmt.Printf("%v\n", v)
+	fmt.Println(w)
 }
