@@ -195,9 +195,18 @@ created by main._simulate
 // 	fmt.Printf("%v: 1:%v / 2:%v", n.values, v1, v2)
 // }
 
+func test(val int) {
+	fmt.Println("1", val)
+	val += 20
+	fmt.Println("2", val)
+	val = 99
+	fmt.Println("3", val)
+}
+
 func main() {
 	v := []uint8{4, 3, 5, 8, 1, 7, 2}
 	w := strings.Replace(fmt.Sprintf("%v", v), " ", ",", -1)
 	fmt.Printf("%v\n", v)
 	fmt.Println(w)
+	test(24)
 }
