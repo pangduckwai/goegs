@@ -212,11 +212,17 @@ created by main._simulate
 
 func main() {
 	dat := uint8(0)
-	fmt.Printf("%08b | 0x%02x | New:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
 
 	dat |= 0x1
-	fmt.Printf("%08b | 0x%02x | New:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+	dat |= 0x2
+	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
 
 	dat |= 0x10
-	fmt.Printf("%08b | 0x%02x | New:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+	dat &= 0xFE
+	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
 }
