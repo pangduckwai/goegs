@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"strings"
 	"time"
 )
 
@@ -195,18 +194,29 @@ created by main._simulate
 // 	fmt.Printf("%v: 1:%v / 2:%v", n.values, v1, v2)
 // }
 
-func test(val int) {
-	fmt.Println("1", val)
-	val += 20
-	fmt.Println("2", val)
-	val = 99
-	fmt.Println("3", val)
-}
+// func test(val int) {
+// 	fmt.Println("1", val)
+// 	val += 20
+// 	fmt.Println("2", val)
+// 	val = 99
+// 	fmt.Println("3", val)
+// }
+
+// func main() {
+// 	v := []uint8{4, 3, 5, 8, 1, 7, 2}
+// 	w := strings.Replace(fmt.Sprintf("%v", v), " ", ",", -1)
+// 	fmt.Printf("%v\n", v)
+// 	fmt.Println(w)
+// 	test(24)
+// }
 
 func main() {
-	v := []uint8{4, 3, 5, 8, 1, 7, 2}
-	w := strings.Replace(fmt.Sprintf("%v", v), " ", ",", -1)
-	fmt.Printf("%v\n", v)
-	fmt.Println(w)
-	test(24)
+	dat := uint8(0)
+	fmt.Printf("%08b | 0x%02x | New:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+	dat |= 0x1
+	fmt.Printf("%08b | 0x%02x | New:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+	dat |= 0x10
+	fmt.Printf("%08b | 0x%02x | New:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
 }
