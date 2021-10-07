@@ -210,19 +210,37 @@ created by main._simulate
 // 	test(24)
 // }
 
+// func main() {
+// 	dat := uint8(0)
+// 	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+// 	dat |= 0x1
+// 	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+// 	dat |= 0x2
+// 	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+// 	dat |= 0x10
+// 	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+
+// 	dat &= 0xFE
+// 	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+// }
+
 func main() {
-	dat := uint8(0)
-	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+	val := uint8(1)
+	val--
+	fmt.Println(val)
+	val--
+	fmt.Println(val)
 
-	dat |= 0x1
-	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+	var a1 []int
+	a1 = append(a1, 1, 3)
+	fmt.Println(a1)
 
-	dat |= 0x2
-	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
-
-	dat |= 0x10
-	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
-
-	dat &= 0xFE
-	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
+	var a2 [][]int
+	var a3 []int
+	a3 = append(a3, 2, 3)
+	a2 = append([][]int{a3}, a1)
+	fmt.Println(a2)
 }
