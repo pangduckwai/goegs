@@ -227,20 +227,33 @@ created by main._simulate
 // 	fmt.Printf("%08b | 0x%02x | Ready:%5v | Finished:%5v\n", dat, dat, (dat&0x1) > 0, (dat&0x80) > 0)
 // }
 
+// func main() {
+// 	val := uint8(1)
+// 	val--
+// 	fmt.Println(val)
+// 	val--
+// 	fmt.Println(val)
+
+// 	var a1 []int
+// 	a1 = append(a1, 1, 3)
+// 	fmt.Println(a1)
+
+// 	var a2 [][]int
+// 	var a3 []int
+// 	a3 = append(a3, 2, 3)
+// 	a2 = append([][]int{a3}, a1)
+// 	fmt.Println(a2)
+// }
+
+type Data uint16
+
+func disp(val uint16) {
+	fmt.Printf("%b\n", val)
+}
+
 func main() {
-	val := uint8(1)
-	val--
-	fmt.Println(val)
-	val--
-	fmt.Println(val)
-
-	var a1 []int
-	a1 = append(a1, 1, 3)
-	fmt.Println(a1)
-
-	var a2 [][]int
-	var a3 []int
-	a3 = append(a3, 2, 3)
-	a2 = append([][]int{a3}, a1)
-	fmt.Println(a2)
+	// var dat Data
+	dat := Data(0xEFD3)
+	fmt.Println(dat)
+	disp(uint16(dat))
 }
