@@ -1,105 +1,188 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"sea9.org/go/mongo-test/node"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const impl = "BSCTTTCCDMT5XT0MTD-6"
-const monurl = "mongodb://192.168.56.31:27017"
-const dbsrc = "test1"
-const dbtgt = "test"
-const colsrc = "mct"
-const coltgt = "mct"
-
-func walk(database string, collection string) {
-	fmt.Printf("[MONGO-TEST] %v.%v\n", database, collection)
-	coll, err := node.Collection(database, collection)
-	if err != nil {
-		log.Fatalf("[Error] %v\n", err)
-	}
-
-	// Read existing nodes
-	head, elapsed, err := node.Root(coll, impl, false)
-	if err != nil {
-		log.Fatalf("[Error] %v\n", err)
-	}
-	fmt.Println("[MONGO-TEST] node read:", elapsed)
-
-	// Walk thru the entire tree
-	var curr *node.Node
-	queue := []*node.Node{head}
-	for len(queue) > 0 {
-		curr = queue[0]
-
-		if curr.Next == nil && curr.ID != primitive.NilObjectID {
-			_, _, _, err := node.Next(coll, curr)
-			if err != nil {
-				log.Fatalf("[Error] %v\n", err)
-			}
-		}
-
-		queue = append(queue[1:], curr.Next...)
-	}
-
-	if valid, count := node.Validate(head); valid {
-		fmt.Printf("[MONGO-TEST] Validated %v nodes: okay\n", count)
-		fmt.Println(head.Tree(10, 0))
-	} else {
-		fmt.Println(head.Tree(10, 0))
-		log.Fatal("[Error] Validation failed")
-	}
+// Err node errors
+type Err struct {
+	Msg string
 }
 
-// func merge() {
-// 	collSrc, err := node.Collection(dbsrc, colsrc)
-// 	if err != nil {
-// 		log.Fatalf("[Error] %v\n", err)
-// 	}
-// 	headSrc, _, err := node.Root(collSrc, impl, false)
-// 	if err != nil {
-// 		log.Fatalf("[Error] %v\n", err)
-// 	}
-// 	var currSrc *node.Node
-// 	queSrc := []*node.Node{headSrc}
+func (e *Err) Error() string {
+	return fmt.Sprintf("[node]%v", e.Msg)
+}
 
-// 	collTgt, err := node.Collection(dbtgt, coltgt)
-// 	if err != nil {
-// 		log.Fatalf("[Error] %v\n", err)
-// 	}
-// 	headTgt, _, err := node.Root(collTgt, impl, false)
-// 	var currTgt *node.Node
-// 	queTgt := []*node.Node{headTgt}
+const ctxTimeout = 10
+const ctxTimeoutLong = 300
 
-// 	for len(queSrc) > 0 && len(queTgt) > 0 {
-// 		currSrc = queSrc[0]
-// 		currTgt = queTgt[0]
+var isConn bool
+var conn *mongo.Client
 
-// 		fmt.Printf("Source: %v\n", currSrc)
-// 		fmt.Printf("Target: %v\n", currTgt)
+// Stop clean up connection
+func Stop() {
+	ctx, cancel := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
+	defer cancel()
+	isConn = false
+	conn.Disconnect(ctx)
+}
 
-// 		queSrc = append(queSrc[1:], cu)
-// 	}
-// }
+// Connect connect to a mongo database
+func Connect(url string) (err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
+	defer cancel()
+
+	conn, err = mongo.Connect(ctx, options.Client().ApplyURI(url))
+	if err != nil {
+		defer cancel()
+		return err
+	}
+
+	isConn = true
+	return nil
+}
+
+// Connected check if mongo connection is ready
+func Connected() bool {
+	if !isConn {
+		return false
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
+	defer cancel()
+	return conn.Ping(ctx, nil) == nil
+}
+
+// Collection get collection from the active mongodb connection
+func Collection(database string, collection string) *mongo.Collection {
+	if !isConn {
+		return nil
+	}
+
+	mngo := conn.Database(database)
+	return mngo.Collection(collection)
+}
+
+// Read read node by reference
+func Read(db string, cl string, oid primitive.ObjectID) (obj *Objs, err error) {
+	if !isConn {
+		err = &Err{"Not connected"}
+		return
+	}
+	coll := Collection(db, cl)
+	if coll == nil {
+		err = &Err{"Error getting collection"}
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
+	defer cancel()
+
+	if oid == primitive.NilObjectID {
+		err = &Err{"Missing object ID"}
+		return
+	}
+
+	var read Objs
+	if err = coll.FindOne(ctx, bson.M{"_id": oid}).Decode(&read); err != nil {
+		return
+	}
+
+	obj = &read
+	return
+}
+
+func Write(db string, cl string, obj *Objs) (matchedCount, modifiedCount, upsertedCount int64, err error) {
+	if !isConn {
+		err = &Err{"Not connected"}
+		return
+	}
+	coll := Collection(db, cl)
+	if coll == nil {
+		err = &Err{"Error getting collection"}
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), ctxTimeoutLong*time.Second)
+	defer cancel()
+
+	if obj.ID == primitive.NilObjectID {
+		err = &Err{"Missing object ID"}
+		return
+	}
+
+	rst, err := coll.UpdateOne(
+		ctx,
+		bson.M{"_id": obj.ID},
+		bson.M{"$set": obj},
+		options.Update().SetUpsert(true),
+	)
+	if err != nil {
+		return
+	}
+
+	matchedCount = rst.MatchedCount
+	modifiedCount = rst.ModifiedCount
+	upsertedCount = rst.UpsertedCount
+	return
+}
+
+type Objs struct {
+	ID    primitive.ObjectID `bson:"_id,omitempty"`
+	Str   string             `bson:"s,omitempty"`
+	Val1  uint64             `bson:"x,omitempty"`
+	Val2  uint32             `bson:"y,omitempty"`
+	Val3  uint16             `bson:"z,omitempty"`
+	Level int                `bson:"-"`
+}
+
+const url = "mongodb://192.168.56.31:27017"
+const db = "test"
+const col = "obj"
 
 func main() {
-	fmt.Println("[MONGO-TEST]######################################################")
-	fmt.Printf("[MONGO-TEST] Connecting to %v %v.%v -> %v.%v\n", monurl, dbsrc, colsrc, dbtgt, coltgt)
-
-	// Connect to mongo
-	err := node.Connect(monurl)
+	err := Connect(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer node.Stop()
+	defer Stop()
 
-	if !node.Connected() {
-		log.Fatal("[Error] Connection failed")
+	if !Connected() {
+		log.Fatal("[WDOM-MC][CONN][Error] Connection failed")
 	}
 
-	walk(dbtgt, coltgt)
-	walk(dbsrc, colsrc)
+	var matched, modified, upserted int64
+
+	obj1 := &Objs{
+		ID:    primitive.NewObjectID(),
+		Str:   "UVWXYZA",
+		Val1:  0x4000000000000000,
+		Val2:  0x1000,
+		Level: 2345234,
+	}
+	matched, modified, upserted, err = Write(db, col, obj1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Obj1: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
+
+	obj2 := &Objs{
+		ID:    primitive.NewObjectID(),
+		Str:   "UVWXYZB",
+		Val2:  0x20000000,
+		Val3:  0x1000,
+		Level: 2345234,
+	}
+	matched, modified, upserted, err = Write(db, col, obj2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Obj2: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
 }
