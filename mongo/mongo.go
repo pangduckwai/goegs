@@ -137,15 +137,15 @@ func Write(db string, cl string, obj *Objs) (matchedCount, modifiedCount, upsert
 type Objs struct {
 	ID    primitive.ObjectID `bson:"_id,omitempty"`
 	Str   string             `bson:"s,omitempty"`
-	Val1  uint64             `bson:"x,omitempty"`
+	Val1  int64              `bson:"x,omitempty"`
 	Val2  uint32             `bson:"y,omitempty"`
 	Val3  uint16             `bson:"z,omitempty"`
 	Level int                `bson:"-"`
 }
 
-const url = "mongodb://192.168.56.31:27017"
+const url = "mongodb://localhost:27017"
 const db = "test"
-const col = "obj"
+const col = "mctree"
 
 func main() {
 	err := Connect(url)
@@ -158,7 +158,10 @@ func main() {
 		log.Fatal("[WDOM-MC][CONN][Error] Connection failed")
 	}
 
-	var obj1, obj2 *Objs
+	///////////
+	// Write //
+	var obj1 *Objs
+	// var obj2 *Objs
 
 	// var matched, modified, upserted int64
 
@@ -187,8 +190,13 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 	// fmt.Printf("Obj2: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
+	///////////
 
-	oid, err := primitive.ObjectIDFromHex("617a0c898306e1ce4f0b5f4e")
+	//////////
+	// Read //
+	var oid primitive.ObjectID
+
+	oid, err = primitive.ObjectIDFromHex("617a7abaa11fbd0cd9621d1f")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -196,15 +204,35 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("1: 0x%x 0x%x 0x%x\n", obj1.Val1, obj1.Val2, obj1.Val3)
+	fmt.Printf("1: 0x%x 0x%x 0x%x\n", uint64(obj1.Val1), obj1.Val2, obj1.Val3)
 
-	oid, err = primitive.ObjectIDFromHex("617a0c898306e1ce4f0b5f4f")
-	if err != nil {
-		log.Fatal(err)
-	}
-	obj2, err = Read(db, col, oid)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("2: 0x%x 0x%x 0x%x\n", obj2.Val1, obj2.Val2, obj2.Val3)
+	// oid, err = primitive.ObjectIDFromHex("617a0c898306e1ce4f0b5f4f")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// obj2, err = Read(db, col, oid)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("2: 0x%x 0x%x 0x%x\n", obj2.Val1, obj2.Val2, obj2.Val3)
+	//////////
+
+	// var a uint64 = 0x8000000000000002
+	// fmt.Printf("HAHA %b %x %v\n", a, a, a)
+	// b := int64(a)
+	// fmt.Printf("HAHB %b %x %v\n", b, b, b)
+	// x := uint64(b)
+	// fmt.Printf("HAHZ %b %x %v %v %v %v\n", x, x, x, x&0x8000000000000000 > 0, x&0x4000000000000000 > 0, x&0x2 > 0)
+
+	// obj3 := &Objs{
+	// 	ID:    primitive.NewObjectID(),
+	// 	Str:   "UVWXYZC",
+	// 	Val1:  b,
+	// 	Level: 2345234,
+	// }
+	// matched, modified, upserted, err = Write(db, col, obj3)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("Obj3: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
 }
