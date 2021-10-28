@@ -162,7 +162,7 @@ func main() {
 
 	// var matched, modified, upserted int64
 
-	// obj1 := &Objs{
+	// obj1 = &Objs{
 	// 	ID:    primitive.NewObjectID(),
 	// 	Str:   "UVWXYZA",
 	// 	Val1:  0x4000000000000000,
@@ -175,11 +175,11 @@ func main() {
 	// }
 	// fmt.Printf("Obj1: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
 
-	// obj2 := &Objs{
+	// obj2 = &Objs{
 	// 	ID:    primitive.NewObjectID(),
 	// 	Str:   "UVWXYZB",
 	// 	Val2:  0x20000000,
-	// 	Val3:  0x1000,
+	// 	Val3:  0x8000,
 	// 	Level: 2345234,
 	// }
 	// matched, modified, upserted, err = Write(db, col, obj2)
@@ -188,7 +188,7 @@ func main() {
 	// }
 	// fmt.Printf("Obj2: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
 
-	oid, err := primitive.ObjectIDFromHex("6178e6e9e80c38cca32df2c7")
+	oid, err := primitive.ObjectIDFromHex("617a0c898306e1ce4f0b5f4e")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -198,7 +198,7 @@ func main() {
 	}
 	fmt.Printf("1: 0x%x 0x%x 0x%x\n", obj1.Val1, obj1.Val2, obj1.Val3)
 
-	oid, err = primitive.ObjectIDFromHex("6178e6e9e80c38cca32df2c8")
+	oid, err = primitive.ObjectIDFromHex("617a0c898306e1ce4f0b5f4f")
 	if err != nil {
 		log.Fatal(err)
 	}
