@@ -158,31 +158,53 @@ func main() {
 		log.Fatal("[WDOM-MC][CONN][Error] Connection failed")
 	}
 
-	var matched, modified, upserted int64
+	var obj1, obj2 *Objs
 
-	obj1 := &Objs{
-		ID:    primitive.NewObjectID(),
-		Str:   "UVWXYZA",
-		Val1:  0x4000000000000000,
-		Val2:  0x1000,
-		Level: 2345234,
-	}
-	matched, modified, upserted, err = Write(db, col, obj1)
+	// var matched, modified, upserted int64
+
+	// obj1 := &Objs{
+	// 	ID:    primitive.NewObjectID(),
+	// 	Str:   "UVWXYZA",
+	// 	Val1:  0x4000000000000000,
+	// 	Val2:  0x1000,
+	// 	Level: 2345234,
+	// }
+	// matched, modified, upserted, err = Write(db, col, obj1)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("Obj1: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
+
+	// obj2 := &Objs{
+	// 	ID:    primitive.NewObjectID(),
+	// 	Str:   "UVWXYZB",
+	// 	Val2:  0x20000000,
+	// 	Val3:  0x1000,
+	// 	Level: 2345234,
+	// }
+	// matched, modified, upserted, err = Write(db, col, obj2)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("Obj2: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
+
+	oid, err := primitive.ObjectIDFromHex("6178e6e9e80c38cca32df2c7")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Obj1: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
-
-	obj2 := &Objs{
-		ID:    primitive.NewObjectID(),
-		Str:   "UVWXYZB",
-		Val2:  0x20000000,
-		Val3:  0x1000,
-		Level: 2345234,
-	}
-	matched, modified, upserted, err = Write(db, col, obj2)
+	obj1, err = Read(db, col, oid)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Obj2: Matched:%v Modified:%v Upserted:%v\n", matched, modified, upserted)
+	fmt.Printf("1: 0x%x 0x%x 0x%x\n", obj1.Val1, obj1.Val2, obj1.Val3)
+
+	oid, err = primitive.ObjectIDFromHex("6178e6e9e80c38cca32df2c8")
+	if err != nil {
+		log.Fatal(err)
+	}
+	obj2, err = Read(db, col, oid)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("2: 0x%x 0x%x 0x%x\n", obj2.Val1, obj2.Val2, obj2.Val3)
 }
