@@ -206,6 +206,12 @@ func main() {
 	}
 	fmt.Printf("1: 0x%x 0x%x 0x%x\n", uint64(obj1.Val1), obj1.Val2, obj1.Val3)
 
+	var i0 uint64 = 9223372036854775808
+	var i1 uint64 = 9223372036854775809
+
+	fmt.Printf("0: %x %v\n", i0, int64(i0))
+	fmt.Printf("1: %x %v\n", i1, int64(i1))
+
 	// oid, err = primitive.ObjectIDFromHex("617a0c898306e1ce4f0b5f4f")
 	// if err != nil {
 	// 	log.Fatal(err)

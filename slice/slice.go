@@ -12,48 +12,48 @@ type test struct {
 	s5 []int
 }
 
-func main() {
-	s3 := make([]int, 5)
-	for i := range s3 {
-		s3[i] = i
-	}
-	s4 := []int{5, 4, 3, 2, 1}
+// func main() {
+// 	s3 := make([]int, 5)
+// 	for i := range s3 {
+// 		s3[i] = i
+// 	}
+// 	s4 := []int{5, 4, 3, 2, 1}
 
-	t := test{
-		make([]uint64, 3),
-		nil,
-		s3,
-		s4,
-		make([]int, 0),
-	}
+// 	t := test{
+// 		make([]uint64, 3),
+// 		nil,
+// 		s3,
+// 		s4,
+// 		make([]int, 0),
+// 	}
 
-	fmt.Println(t.s1)
-	fmt.Println(t.s2)
-	fmt.Println(t.s3)
-	fmt.Println(t.s4)
-	fmt.Println(t.s5)
+// 	fmt.Println(t.s1)
+// 	fmt.Println(t.s2)
+// 	fmt.Println(t.s3)
+// 	fmt.Println(t.s4)
+// 	fmt.Println(t.s5)
 
-	t.s1[2] = 3
-	fmt.Println(t.s1)
+// 	t.s1[2] = 3
+// 	fmt.Println(t.s1)
 
-	// fmt.Println(len(t.s2))
-	// fmt.Println(len(t.s5))
+// fmt.Println(len(t.s2))
+// fmt.Println(len(t.s5))
 
-	// for i := 1; i <= 3; i++ {
-	// 	t.s2 = append(t.s2, i*2)
-	// }
-	// fmt.Println(t.s2)
-	// fmt.Println()
+// for i := 1; i <= 3; i++ {
+// 	t.s2 = append(t.s2, i*2)
+// }
+// fmt.Println(t.s2)
+// fmt.Println()
 
-	// 	ss := []int{1, 2}
-	// 	fmt.Println("OH", ss)
-	// 	ss = ss[1:]
-	// 	fmt.Println("OH", ss)
-	// 	ss = ss[1:]
-	// 	fmt.Println("OH", ss)
-	// 	// ss = ss[1:]
-	// 	// fmt.Println("OH", ss)
-}
+// 	ss := []int{1, 2}
+// 	fmt.Println("OH", ss)
+// 	ss = ss[1:]
+// 	fmt.Println("OH", ss)
+// 	ss = ss[1:]
+// 	fmt.Println("OH", ss)
+// 	// ss = ss[1:]
+// 	// fmt.Println("OH", ss)
+// }
 
 // func main() {
 // 	var s0 []int
@@ -221,3 +221,12 @@ func main() {
 
 // 	fmt.Printf("Elapsed: %v %v %v -- %v", find1, find2, find3, find1+find2+find3)
 // }
+
+func main() {
+	buff := make([]int, 4)
+	buff[3] = 77
+	fmt.Println(buff)
+
+	buff = append(buff, 8)
+	fmt.Println(buff)
+}

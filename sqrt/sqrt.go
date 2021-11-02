@@ -6,16 +6,16 @@ import (
 )
 
 // ErrNegativeSqrt error from square root function
-type ErrNegativeSqrt float64
+// type ErrNegativeSqrt float64
 
-func (e ErrNegativeSqrt) Error() string {
-	return fmt.Sprintf("cannot Sqrt negative number: %v", float64(e))
-}
+// func (e ErrNegativeSqrt) Error() string {
+// 	return fmt.Sprintf("cannot Sqrt negative number: %v", float64(e))
+// }
 
 // Sqrt return squre root of the input value.
 func Sqrt(x float64) (float64, error) {
 	if x < 0 {
-		err := ErrNegativeSqrt(x)
+		err := Err("Value is -ve") //ErrNegativeSqrt(x)
 		return 0, err
 	}
 
@@ -37,4 +37,10 @@ func main() {
 			fmt.Printf("√%v - %v (%v)\n", v, r, math.Sqrt(v))
 		}
 	}
+}
+
+type Err string
+
+func (e Err) Error() string {
+	return fmt.Sprintf("[game]%v", string(e))
 }
