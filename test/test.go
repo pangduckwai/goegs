@@ -245,15 +245,20 @@ created by main._simulate
 // 	fmt.Println(a2)
 // }
 
-type Data uint16
+// type Data uint16
 
-func disp(val uint16) {
-	fmt.Printf("%b\n", val)
-}
+// func disp(val uint16) {
+// 	fmt.Printf("%b\n", val)
+// }
+
+// func main() {
+// 	// var dat Data
+// 	dat := Data(0xEFD3)
+// 	fmt.Println(dat)
+// 	disp(uint16(dat))
+// }
 
 func main() {
-	// var dat Data
-	dat := Data(0xEFD3)
-	fmt.Println(dat)
-	disp(uint16(dat))
+	str := "abcde-fghi-jklmno"
+	fmt.Printf("%v\n", str[0:len(str)-7])
 }
