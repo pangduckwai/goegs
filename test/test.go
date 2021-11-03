@@ -258,7 +258,21 @@ created by main._simulate
 // 	disp(uint16(dat))
 // }
 
+// func main() {
+// 	str := "abcde-fghi-jklmno"
+// 	fmt.Printf("%v\n", str[0:len(str)-7])
+// }
+
 func main() {
-	str := "abcde-fghi-jklmno"
-	fmt.Printf("%v\n", str[0:len(str)-7])
+	n := 42
+	t := float64(1)
+	l := float64(1)
+	fmt.Println(4)
+	fmt.Println(1)
+	for i := n; i > 38; i-- {
+		l = l * float64(i)
+		t += l
+		fmt.Printf("%.0f\n", l)
+	}
+	fmt.Printf("%.0f\n", t)
 }
