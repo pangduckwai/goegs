@@ -1,3 +1,3 @@
-module sea9.org/go/jailer
+module sea9.org/go/egs/jailer
 
-go 1.15
+go 1.18
