@@ -24,17 +24,9 @@ select * from test
 */
 func main() {
 	uid := "wdom"
-	// pwd := ""
 	host := "192.168.56.42"
 	port := 5432
 	dbname := "wdom"
-
-	// spr := ""
-	// if pwd != "" {
-	// 	spr = ":"
-	// }
-	// url := fmt.Sprintf("postgres://%v:%v@%v:%v/%v", uid, pwd, host, port, dbname)
-	// url := fmt.Sprintf("host=%v port=%v dbname=%v user=%v password=%v", host, port, dbname, uid, pwd)
 	url := fmt.Sprintf("host=%v port=%v dbname=%v user=%v", host, port, dbname, uid)
 
 	fmt.Println("URL: ", url)
@@ -46,20 +38,22 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 
-	rows, err := conn.Query(context.Background(), "select descn, remarks, updated_on from test where descn = $1", "Hello again")
+	rows, err := conn.Query(context.Background(), "select descn, remarks, updated_on from test where descn=$1", "Hello again")
 	if err != nil {
 		log.Fatalf("Unable to query database: %v\n", err)
 		os.Exit(1)
 	}
 
+	count := 0
 	for rows.Next() {
+		count++
 		var dsc, rmk string
 		var tms time.Time
-		err := rows.Scan(&dsc, &rmk, tms)
+		err := rows.Scan(&dsc, &rmk, &tms)
 		if err != nil {
 			log.Fatalf("Unable to read row: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("%v | %v | %v \n", dsc, rmk, tms)
+		fmt.Printf("%3v | %-20v | %-30v | %v \n", count, dsc, rmk, tms)
 	}
 }
