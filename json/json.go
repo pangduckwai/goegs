@@ -27,4 +27,28 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("3 %v\n", *s)
+
+	r = "{\"Code\":1,\"Msg\":\"yo bro\"}"
+	j = []byte(r)
+	err = json.Unmarshal(j, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("4 %v\n", *s)
+
+	r = "{\"Msg\":\"yo bro\",\"X\":1}"
+	j = []byte(r)
+	err = json.Unmarshal(j, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("5 %v\n", *s)
+
+	r = "{\"Code\":\"ACK\",\"Msg\":\"yo bro\"}"
+	j = []byte(r)
+	err = json.Unmarshal(j, s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("6 %v\n", *s)
 }
