@@ -43,7 +43,7 @@ const SQL_TESTS_UPS = "WITH t AS (\n" +
 	"  o = tests.o || EXCLUDED.o,\n" +
 	"  t = EXCLUDED.t\n" +
 	"  RETURNING xmax)\n" +
-	" SELECT SUM(CASE WHEN NOT xmax = 0 THEN 1 ELSE 0 END) AS upd FROM t"
+	" SELECT COUNT(*) AS cnt, SUM(CASE WHEN NOT xmax = 0 THEN 1 ELSE 0 END) AS upd FROM t"
 
 func run() int {
 	uid := "paul"
@@ -65,10 +65,10 @@ func run() int {
 	var m, n int32
 	var o string
 	var t time.Time
-	var u int
+	var i, u int
 
 	// Update
-	err = conn.QueryRow(context.Background(), SQL_TESTS_UPS, 0, 2, ".").Scan(&u)
+	err = conn.QueryRow(context.Background(), SQL_TESTS_UPS, 0, 2, ".").Scan(&i, &u)
 	if err != nil {
 		log.Fatalf("Insert to database failed: %v\n", err)
 		return 1
@@ -76,7 +76,7 @@ func run() int {
 	fmt.Printf("Insert to database: %v\n\n", u)
 
 	// Insert
-	err = conn.QueryRow(context.Background(), SQL_TESTS_UPS, 0, 3, "A").Scan(&u)
+	err = conn.QueryRow(context.Background(), SQL_TESTS_UPS, 0, 3, "A").Scan(&i, &u)
 	if err != nil {
 		log.Fatalf("Insert to database failed: %v\n", err)
 		return 1

@@ -263,16 +263,58 @@ created by main._simulate
 // 	fmt.Printf("%v\n", str[0:len(str)-7])
 // }
 
+// func main() {
+// 	n := 42
+// 	t := float64(1)
+// 	l := float64(1)
+// 	fmt.Println(4)
+// 	fmt.Println(1)
+// 	for i := n; i > 38; i-- {
+// 		l = l * float64(i)
+// 		t += l
+// 		fmt.Printf("‡ %.0f\n", l)
+// 	}
+// 	fmt.Printf("‡ %.0f\n", t)
+// }
+
+// func main() {
+// 	fmt.Printf("%v\n", Version("11.139.04.beta.202306"))
+// 	fmt.Printf("%v\n", Version("11.139.04.beta.202306", false))
+// 	fmt.Printf("%v\n", Version("11.139.04.beta.202306", true))
+// 	fmt.Printf("%v\n", Version("11.139.04.202306"))
+// 	fmt.Printf("%v\n", Version("11.139.04.202306", false))
+// 	fmt.Printf("%v\n", Version("11.139.04.202306", true))
+// 	fmt.Printf("%v\n", Version("11.139.04"))
+// 	fmt.Printf("%v\n", Version("11.139.04", false))
+// 	fmt.Printf("%v\n", Version("11.139.04", true))
+// }
+
+// // Version wdomc version. Format: {Major-version}.{Minor-version}.{Revision}.[Tag].[Branch].{Timestamp}
+// func Version(version string, full ...bool) string {
+// 	if strings.Count(version, ".") <= 3 || (len(full) > 0 && full[0]) {
+// 		return version + " (is full)"
+// 	}
+
+// 	return version[0:strings.LastIndex(version, ".")] + " (not full)"
+// }
+
 func main() {
-	n := 42
-	t := float64(1)
-	l := float64(1)
-	fmt.Println(4)
-	fmt.Println(1)
-	for i := n; i > 38; i-- {
-		l = l * float64(i)
-		t += l
-		fmt.Printf("%.0f\n", l)
+	player := 6
+	CardCount := 44
+
+	var deck []uint8
+	cards := make([][]uint8, player)
+	for i, j := 0, 0; i < CardCount; i++ {
+		j = i / 2
+		if j < player {
+			cards[j] = append(cards[j], uint8(i))
+			// fmt.Printf("i:%v -> cards[%v][?]\n", i, j)
+		} else {
+			deck = append(deck, uint8(i))
+			// fmt.Printf("deck[%v]\n", i)
+		}
 	}
-	fmt.Printf("%.0f\n", t)
+
+	fmt.Println(cards)
+	fmt.Println(deck)
 }
