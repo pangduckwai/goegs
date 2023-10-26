@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"sea9.org/go/neo4j/config"
+	"sea9.org/go/neo4j/nodes"
 	"sea9.org/go/neo4j/storage"
 )
 
@@ -28,11 +29,18 @@ func main() {
 		panic("Connection failed")
 	}
 
-	var rslt []string
-	rslt, err = conn.ExecuteQuery("MATCH (t:T)-[:C*]-(c) RETURN c", nil)
-	if err != nil {
-		panic(err)
-	}
+	var rslt []map[string]any
+
+	// Test ID
+	// fmt.Println(conn.TestId("helloThereHowAreYou???"))
+
+	// Query
+	// rslt, err = conn.ExecuteQuery("MATCH (t:T)-[r:C*]-(c) RETURN t,r,c", nil)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// Write
 	// if err := conn.BeginTrx(); err == nil {
 	// 	rslt, err = conn.ExecuteTrx("MATCH (p:N) WHERE ID(p)=$nid CREATE (c:N {r:1})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1 RETURN c", map[string]any{"nid": 8})
 	// 	if err != nil {
@@ -45,10 +53,34 @@ func main() {
 	// 	panic(err)
 	// }
 
-	// Print results
-	for _, l := range rslt {
-		fmt.Println(l)
+	// Add node
+	if err := conn.BeginTrx(); err == nil {
+		rslt, err = conn.AddNode("4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13", nodes.New(nil, 0, 2, []uint8{1}, 0), 0)
+		if err != nil {
+			conn.Rollback()
+			panic(err)
+		}
+		conn.Commit()
+		fmt.Println(rslt)
+	} else {
+		panic(err)
 	}
+
+	// Print results
+	for _, rst := range rslt {
+		for k, v := range rst {
+			if k == "r" {
+				fmt.Printf("%v :\n", k)
+				for _, m := range v.([]any) {
+					fmt.Printf("   -%+v\n", m)
+				}
+			} else {
+				fmt.Printf("%v : %+v\n", k, v)
+			}
+		}
+	}
+
+	fmt.Printf("CFG: %+v\n", cfg)
 }
 
 /*
