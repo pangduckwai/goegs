@@ -44,8 +44,8 @@ func (conn *Neo4jConn) AddNode(parent nodes.Nid, node *nodes.Node, winner uint8)
 		}
 
 		rslt := map[string]struct{}{}
-		for _, rcrd := range records {
-			for _, v := range rcrd.AsMap() {
+		for _, record := range records {
+			for _, v := range record.AsMap() {
 				rslt[v.(string)] = struct{}{}
 			}
 		}

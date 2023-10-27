@@ -24,8 +24,15 @@ type Conn interface {
 		error,
 	)
 
+	ReadNode(
+		curr nodes.Nid, // the ID of the node to be read
+	) (
+		*nodes.Node, // the node read
+		error,
+	)
+
 	ReadNext(
-		curr nodes.Nid, // the node which child nodes are to be read
+		curr nodes.Nid, // the ID of the node which child nodes are to be read
 	) (
 		[]*nodes.Node, // list of sorted child nodes
 		[]nodes.Nid, // list of node IDs of the sorted child nodes
@@ -40,10 +47,6 @@ type Conn interface {
 		nodes.Nid, // the newly added leaf node
 		error,
 	)
-
-	TestId(elmId nodes.Nid) string
-	ExecuteQuery(query string, params map[string]any) ([]map[string]any, error)
-	ExecuteTrx(query string, params map[string]any) ([]map[string]any, error)
 }
 
 func Connect(cfg *config.Config, ctx context.Context) (conn Conn, err error) {

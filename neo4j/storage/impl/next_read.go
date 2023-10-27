@@ -24,8 +24,8 @@ func (conn *Neo4jConn) ReadNext(curr nodes.Nid) (next []*nodes.Node, nids []node
 			return
 		}
 
-		for _, rcrd := range result.Records {
-			for k, v := range rcrd.AsMap() {
+		for _, record := range result.Records {
+			for k, v := range record.AsMap() {
 				switch k {
 				case "id":
 					nids = append(nids, v)

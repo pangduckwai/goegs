@@ -6,10 +6,8 @@ import (
 	"log"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j/db"
 	"sea9.org/go/neo4j/common"
 	"sea9.org/go/neo4j/config"
-	"sea9.org/go/neo4j/nodes"
 )
 
 // Neo4jConn connection object for neo4j
@@ -116,44 +114,4 @@ func (conn *Neo4jConn) Commit() error {
 func (conn *Neo4jConn) Rollback() error {
 	defer conn.sessionEnd()
 	return conn.trx.Rollback(conn.ctx)
-}
-
-// //////////////////////////////////////////
-// ExecuteQuery TEMP function for testing
-func (conn *Neo4jConn) ExecuteQuery(query string, params map[string]any) (out []map[string]any, err error) {
-	if conn.Connected() {
-		var result *neo4j.EagerResult
-		result, err = neo4j.ExecuteQuery(conn.ctx, conn.driver, query, params, neo4j.EagerResultTransformer, neo4j.ExecuteQueryWithDatabase(conn.dbName))
-		if err != nil {
-			return
-		}
-		for _, rcrd := range result.Records {
-			out = append(out, rcrd.AsMap())
-		}
-	}
-	return
-}
-
-// ExecuteTrx TEMP function for testing
-func (conn *Neo4jConn) ExecuteTrx(query string, params map[string]any) (out []map[string]any, err error) {
-	if conn.TrxReady() {
-		var result neo4j.ResultWithContext
-		result, err = conn.trx.Run(conn.ctx, query, params)
-		if err != nil {
-			return
-		}
-		var records []*db.Record
-		records, err = result.Collect(conn.ctx)
-		if err != nil {
-			return
-		}
-		for _, rcrd := range records {
-			out = append(out, rcrd.AsMap())
-		}
-	}
-	return
-}
-
-func (conn *Neo4jConn) TestId(elmId nodes.Nid) string {
-	return elmId.(string)
 }
