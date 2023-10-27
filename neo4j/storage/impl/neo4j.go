@@ -118,48 +118,6 @@ func (conn *Neo4jConn) Rollback() error {
 	return conn.trx.Rollback(conn.ctx)
 }
 
-// CYPHER_ADD
-const CYPHER_ADD = "MATCH (p:N) WHERE elementId(p)=$elmId CREATE (c:N {r:1, d:$data, v:0})<-[:C]-(p) " +
-	"WITH c MATCH (c)<-[:C*]-(b) WITH c, b, " +
-	"CASE WHEN apoc.bitwise.op(b.d, \"&\", 7) = $winner THEN 1 WHEN b.w IS NULL THEN null ELSE 0 END AS w, " +
-	"CASE WHEN apoc.bitwise.op(c.d, \"&\", 7) = $winner THEN 1 ELSE null END AS v " +
-	"SET b.r = b.r + 1, b.w = coalesce(b.w, 0) + w, c.w = v RETURN elementId(c)"
-
-// AddNode add a new leaf node to the tree
-func (conn *Neo4jConn) AddNode(
-	elmId nodes.Nid, // elementId of the node which the leaf node is to be added to
-	leaf *nodes.Node, // leaf node to be added to the tree
-	winner uint8, // winner of the current simulation
-) (
-	nid []map[string]any, // TEMP
-	err error,
-) {
-	if conn.TrxReady() {
-		var result neo4j.ResultWithContext
-		result, err = conn.trx.Run(
-			conn.ctx,
-			CYPHER_ADD,
-			map[string]any{
-				"elmId":  elmId.(string),
-				"data":   leaf.D,
-				"winner": winner,
-			},
-		)
-		if err != nil {
-			return
-		}
-		var records []*db.Record
-		records, err = result.Collect(conn.ctx)
-		if err != nil {
-			return
-		}
-		for _, rcrd := range records {
-			nid = append(nid, rcrd.AsMap())
-		}
-	}
-	return
-}
-
 // //////////////////////////////////////////
 // ExecuteQuery TEMP function for testing
 func (conn *Neo4jConn) ExecuteQuery(query string, params map[string]any) (out []map[string]any, err error) {

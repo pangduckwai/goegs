@@ -14,14 +14,6 @@ type Tree struct {
 	R *Node  // Root node of the MC Tree
 }
 
-// func (t *Tree) GetTree() *Tree {
-// 	return t
-// }
-
-// func (t *Tree) GetNode() *Node {
-// 	return nil
-// }
-
 // Init initialize a new tree
 func Init(variant string) *Tree {
 	if variant == "" {

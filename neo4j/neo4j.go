@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 
 	"sea9.org/go/neo4j/config"
 	"sea9.org/go/neo4j/nodes"
@@ -29,7 +30,7 @@ func main() {
 		panic("Connection failed")
 	}
 
-	var rslt []map[string]any
+	// var rslt []map[string]any
 
 	// Test ID
 	// fmt.Println(conn.TestId("helloThereHowAreYou???"))
@@ -53,34 +54,59 @@ func main() {
 	// 	panic(err)
 	// }
 
+	// Print results
+	// for _, rst := range rslt {
+	// 	for k, v := range rst {
+	// 		if k == "r" {
+	// 			fmt.Printf("%v :\n", k)
+	// 			for _, m := range v.([]any) {
+	// 				fmt.Printf("   -%+v\n", m)
+	// 			}
+	// 		} else {
+	// 			fmt.Printf("%v : %+v\n", k, v)
+	// 		}
+	// 	}
+	// }
+
+	// Read tree
+	tree, err := conn.ReadTree("TESTING-3")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Root: %v (%v)\n", tree, tree.R.ID)
+	fmt.Printf("%v\n\n", tree.R)
+
 	// Add node
+	var nid nodes.Nid
 	if err := conn.BeginTrx(); err == nil {
-		rslt, err = conn.AddNode("4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13", nodes.New(nil, 0, 2, []uint8{1}, 0), 0)
+		nid, err = conn.AddNode("4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13", nodes.New(nil, 0, 2, []uint8{1}, 3), 0)
 		if err != nil {
 			conn.Rollback()
 			panic(err)
 		}
 		conn.Commit()
-		fmt.Println(rslt)
+		fmt.Println(nid)
+		fmt.Println()
 	} else {
 		panic(err)
 	}
 
-	// Print results
-	for _, rst := range rslt {
-		for k, v := range rst {
-			if k == "r" {
-				fmt.Printf("%v :\n", k)
-				for _, m := range v.([]any) {
-					fmt.Printf("   -%+v\n", m)
-				}
-			} else {
-				fmt.Printf("%v : %+v\n", k, v)
-			}
-		}
+	// Read child
+	next, _, err := conn.ReadNext("4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13")
+	if err != nil {
+		panic(err)
+	}
+	for _, n := range next {
+		fmt.Printf(" - %v\n", n)
 	}
 
 	fmt.Printf("CFG: %+v\n", cfg)
+
+	if sort.IsSorted(nodes.Sorted(next)) {
+		fmt.Println("Sorted")
+	} else {
+		fmt.Println("Not sorted")
+	}
 }
 
 /*

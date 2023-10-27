@@ -39,24 +39,25 @@ func TestCalc(t *testing.T) {
 
 Build tree
 ==========
-MERGE (n:N {v:"TESTING-3", r:1}) SET n:T RETURN elementId(n)  -->  "4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0"
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0" CREATE (c:N {r:1, d:67108864, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0" CREATE (c:N {r:1, d:68157440, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0" CREATE (c:N {r:1, d:69206016, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:1" CREATE (c:N {r:1, d:68157441, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:1" CREATE (c:N {r:1, d:69206017, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:2" CREATE (c:N {r:1, d:67108865, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:2" CREATE (c:N {r:1, d:69206017, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:3" CREATE (c:N {r:1, d:67108865, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:3" CREATE (c:N {r:1, d:68157441, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:4" CREATE (c:N {r:1, d:69206018, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:5" CREATE (c:N {r:1, d:68157442, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:6" CREATE (c:N {r:1, d:69206018, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:7" CREATE (c:N {r:1, d:67108866, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:8" CREATE (c:N {r:1, d:68157442, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:9" CREATE (c:N {r:1, d:67108866, v:0})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MERGE (n:N {v:"TESTING-3", r:1, d:0}) SET n:T RETURN elementId(n)  -->  "4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0"
+MERGE (t:T {v: "TESTING-3"}) ON CREATE SET t:N, t.r=1, t.d=0 RETURN elementId(t) as id, t{.*} as prop
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0" CREATE (c:N {r:1, d:67108864})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0" CREATE (c:N {r:1, d:68157440})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:0" CREATE (c:N {r:1, d:69206016})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:1" CREATE (c:N {r:1, d:68157441})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:1" CREATE (c:N {r:1, d:69206017})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:2" CREATE (c:N {r:1, d:67108865})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:2" CREATE (c:N {r:1, d:69206017})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:3" CREATE (c:N {r:1, d:67108865})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:3" CREATE (c:N {r:1, d:68157441})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:4" CREATE (c:N {r:1, d:69206018})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:5" CREATE (c:N {r:1, d:68157442})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:6" CREATE (c:N {r:1, d:69206018})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:7" CREATE (c:N {r:1, d:67108866})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:8" CREATE (c:N {r:1, d:68157442})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:9" CREATE (c:N {r:1, d:67108866})<-[:C]-(p) WITH c MATCH (c)<-[:C*]-(b) SET b.r = b.r + 1;
 
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13" CREATE (c:N {r:1, d:135266304, v:0})<-[:C]-(p)
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13" CREATE (c:N {r:1, d:135266304})<-[:C]-(p)
 WITH c MATCH (c)<-[:C*]-(b)
 WITH c, b,
 CASE
@@ -71,7 +72,8 @@ END AS v
 SET b.r = b.r + 1, b.w = coalesce(b.w, 0) + w, c.w = v
 RETURN elementId(c)
 
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13" CREATE (c:N {r:1, d:136314880, v:0})<-[:C]-(p)
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13" AND NOT EXISTS (MATCH (:N {r:1, d:136314880})<-[:C]-(p))
+CREATE (c:N {r:1, d:136314880})<-[:C]-(p)
 WITH c MATCH (c)<-[:C*]-(b)
 WITH c, b,
 CASE
@@ -86,7 +88,7 @@ END AS v
 SET b.r = b.r + 1, b.w = coalesce(b.w, 0) + w, c.w = v
 RETURN elementId(c)
 
-MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13" CREATE (c:N {r:1, d:134217728, v:0})<-[:C]-(p)
+MATCH (p:N) WHERE elementId(p)="4:96d0ac42-1e05-4930-9584-b243aa9c8b8a:13" CREATE (c:N {r:1, d:134217728})<-[:C]-(p)
 WITH c MATCH (c)<-[:C*]-(b)
 WITH c, b,
 CASE
@@ -128,3 +130,25 @@ func TestBuildNodes(t *testing.T) {
 	fmt.Printf("       %v\n", New(r.R, 0, 2, []uint8{2}, 0))
 	fmt.Printf("       %v\n", New(r.R, 0, 2, []uint8{0}, 0))
 }
+
+/*
+└┬──── [          0/          1]0{0} 0, 0, 0,0,0,   0|   0≡ TEMP: {r:1, d:0, v:0}
+ ├┬─── [          0/          0]0{1} 0, 0, 0,0,0,   0|   0± TEMP: {r:1, d:67108864, v:0}
+ │├┬── [          0/          0]1{1} 1, 0, 0,0,0,   0|   0± TEMP: {r:1, d:68157441, v:0}
+ ││└── [          0/          0]2{1} 2, 0, 0,0,0,   0|   0± TEMP: {r:1, d:69206018, v:0}
+ │└┬── [          0/          0]1{1} 2, 0, 0,0,0,   0|   0± TEMP: {r:1, d:69206017, v:0}
+ │ └── [          0/          0]2{1} 1, 0, 0,0,0,   0|   0± TEMP: {r:1, d:68157442, v:0}
+ ├┬─── [          0/          0]0{1} 1, 0, 0,0,0,   0|   0± TEMP: {r:1, d:68157440, v:0}
+ │├┬── [          0/          0]1{1} 0, 0, 0,0,0,   0|   0± TEMP: {r:1, d:67108865, v:0}
+ ││└── [          0/          0]2{1} 2, 0, 0,0,0,   0|   0± TEMP: {r:1, d:69206018, v:0}
+ │└┬── [          0/          0]1{1} 2, 0, 0,0,0,   0|   0± TEMP: {r:1, d:69206017, v:0}
+ │ └── [          0/          0]2{1} 0, 0, 0,0,0,   0|   0± TEMP: {r:1, d:67108866, v:0}
+ └┬─── [          0/          0]0{1} 2, 0, 0,0,0,   0|   0± TEMP: {r:1, d:69206016, v:0}
+  ├┬── [          0/          0]1{1} 0, 0, 0,0,0,   0|   0± TEMP: {r:1, d:67108865, v:0}
+  │└── [          0/          0]2{1} 1, 0, 0,0,0,   0|   0± TEMP: {r:1, d:68157442, v:0}
+  └┬── [          0/          0]1{1} 1, 0, 0,0,0,   0|   0± TEMP: {r:1, d:68157441, v:0}
+   └── [          0/          0]2{1} 0, 0, 0,0,0,   0|   0± TEMP: {r:1, d:67108866, v:0}
+       [          0/          0]0{2} 1, 0, 0,0,0,   0|   0± TEMP: {r:1, d:135266304, v:0}
+       [          0/          0]0{2} 2, 0, 0,0,0,   0|   0± TEMP: {r:1, d:136314880, v:0}
+       [          0/          0]0{2} 0, 0, 0,0,0,   0|   0± TEMP: {r:1, d:134217728, v:0}
+*/

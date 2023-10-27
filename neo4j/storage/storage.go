@@ -17,12 +17,27 @@ type Conn interface {
 	Rollback() error
 	TrxReady() bool
 
+	ReadTree(
+		variant string, // game variant string
+	) (
+		*nodes.Tree, // tree read from db
+		error,
+	)
+
+	ReadNext(
+		curr nodes.Nid, // the node which child nodes are to be read
+	) (
+		[]*nodes.Node, // list of sorted child nodes
+		[]nodes.Nid, // list of node IDs of the sorted child nodes
+		error,
+	)
+
 	AddNode(
-		elmId nodes.Nid, // elementId of the node which the leaf node is to be added to
-		leaf *nodes.Node, // leaf node to be added to the tree
+		parent nodes.Nid, // the node which the new node is to be added to
+		node *nodes.Node, // new node to be added to the tree
 		winner uint8, // winner of the current simulation
 	) (
-		[]map[string]any, // TEMP
+		nodes.Nid, // the newly added leaf node
 		error,
 	)
 

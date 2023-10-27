@@ -196,8 +196,8 @@ func ToString(
 		)
 	}
 	return fmt.Sprintf(
-		"%v[%11v/%11v]%d{%x}%-17v|%4v%v TEMP: {r:1, d:%v, v:%v}", // TODO TEMP
-		pad, w, r, Turn(d), Action(d), val, cnt, rt, d, v,
+		"%v[%11v/%11v]%d{%x}%-17v|%4v%v",
+		pad, w, r, Turn(d), Action(d), val, cnt, rt,
 	)
 }
 
@@ -207,65 +207,63 @@ func Same(d0 uint32, v0 uint16, d1 uint32, v1 uint16) bool {
 }
 
 // Less for sorting the child array in Node
+// func Less(dn uint32, vn uint16, dl uint32, vl uint16) bool {
+// 	if dn < dl {
+// 		return true
+// 	} else if dn > dl {
+// 		return false
+// 	}
+
+//		return vn < vl
+//	}
 func Less(dn uint32, vn uint16, dl uint32, vl uint16) bool {
-	if dn < dl {
+	ai := Action(dn)
+	aj := Action(dl)
+	if ai < aj {
 		return true
-	} else if dn > dl {
+	} else if ai > aj {
+		return false
+	}
+
+	ai = Param(dn, 1)
+	aj = Param(dl, 1)
+	if ai < aj {
+		return true
+	} else if ai > aj {
+		return false
+	}
+
+	ai = Param(dn, 2)
+	aj = Param(dl, 2)
+	if ai < aj {
+		return true
+	} else if ai > aj {
+		return false
+	}
+
+	ai = Param(dn, 3)
+	aj = Param(dl, 3)
+	if ai < aj {
+		return true
+	} else if ai > aj {
+		return false
+	}
+
+	ai = Param(dn, 4)
+	aj = Param(dl, 4)
+	if ai < aj {
+		return true
+	} else if ai > aj {
+		return false
+	}
+
+	ai = Param(dn, 5)
+	aj = Param(dl, 5)
+	if ai < aj {
+		return true
+	} else if ai > aj {
 		return false
 	}
 
 	return vn < vl
 }
-
-// Less for sorting the child array in Node
-// func Less(dn uint32, vn uint16, dl uint32, vl uint16) bool {
-// 	ai := Action(dn)
-// 	aj := Action(dl)
-// 	if ai < aj {
-// 		return true
-// 	} else if ai > aj {
-// 		return false
-// 	}
-
-// 	ai = Param(dn, 1)
-// 	aj = Param(dl, 1)
-// 	if ai < aj {
-// 		return true
-// 	} else if ai > aj {
-// 		return false
-// 	}
-
-// 	ai = Param(dn, 2)
-// 	aj = Param(dl, 2)
-// 	if ai < aj {
-// 		return true
-// 	} else if ai > aj {
-// 		return false
-// 	}
-
-// 	ai = Param(dn, 3)
-// 	aj = Param(dl, 3)
-// 	if ai < aj {
-// 		return true
-// 	} else if ai > aj {
-// 		return false
-// 	}
-
-// 	ai = Param(dn, 4)
-// 	aj = Param(dl, 4)
-// 	if ai < aj {
-// 		return true
-// 	} else if ai > aj {
-// 		return false
-// 	}
-
-// 	ai = Param(dn, 5)
-// 	aj = Param(dl, 5)
-// 	if ai < aj {
-// 		return true
-// 	} else if ai > aj {
-// 		return false
-// 	}
-
-// 	return vn < vl
-// }

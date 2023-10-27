@@ -41,22 +41,15 @@ type Node struct {
 	R      uint64  // Total number of runs
 	W      uint64  // Total number of won games of this player
 	L      int     // Level in the MC Tree (transient)
+	ID     Nid     // Node ID (transient)
 }
-
-// func (n *Node) GetTree() *Tree {
-// 	return nil
-// }
-
-// func (n *Node) GetNode() *Node {
-// 	return n
-// }
 
 // New create a new node
 // NOTE: not adding the newly created node to the parent's []Next here because Expand() may fail
 func New(prnt *Node, turn uint8, action uint8, vals []uint8, val uint16) *Node {
-	// if prnt == nil {
-	// 	return nil
-	// }
+	if prnt == nil {
+		return nil
+	}
 
 	next := Node{
 		Parent: prnt,
@@ -167,6 +160,7 @@ func (n *Node) AddChild(c *Node) (found bool, idx int, err error) {
 	return
 }
 
+// TODO HERE!!!!!!!!!!!
 // // BackTrack back track the path of a given node
 // // NOTE: do not mix up with "back propagate"
 // func (n *Node) BackTrack() (path []uint8, variant string, err error) {
