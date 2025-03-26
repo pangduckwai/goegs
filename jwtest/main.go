@@ -31,7 +31,7 @@ func readPrivateKey(fstr string) (prvkey *rsa.PrivateKey, err error) {
 }
 
 func readPublicKey(fstr string) (pubkey *rsa.PublicKey, err error) {
-	pubf, err := os.ReadFile("sendpub.pem")
+	pubf, err := os.ReadFile(fstr)
 	if err != nil {
 		err = fmt.Errorf("[PUB1] %v", err)
 		return
@@ -46,7 +46,7 @@ func readPublicKey(fstr string) (pubkey *rsa.PublicKey, err error) {
 	return
 }
 
-func jws(
+func vfy(
 	prvkey *rsa.PrivateKey,
 	pubkey *rsa.PublicKey,
 ) {
@@ -103,9 +103,9 @@ func main() {
 
 	switch os.Args[1] {
 	case "jws":
-		jws(prvs, pubs)
+		vfy(prvs, pubs)
 	case "jwe":
-		run(prvs, prvr, pubs, pubr)
+		enc(prvs, prvr, pubs, pubr)
 	default:
 		log.Printf("Usage: go run . [jws|jwe]\n")
 		os.Exit(1)

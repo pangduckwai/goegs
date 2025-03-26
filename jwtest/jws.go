@@ -27,10 +27,10 @@ func signJws(privateKey *rsa.PrivateKey) (token string, err error) {
 	tkn := jwt.NewWithClaims(
 		jwt.SigningMethodRS256,
 		jwt.MapClaims{
-			"jti":       "12345",
+			"jti":       "2975dd35-6baa-47bc-9c29-be547b0b4cf8",
 			"iat":       now.Unix(),
 			"aud":       "JWTest",
-			"issuer":    "JWTest",
+			"issuer":    "CDI-PUSH-001",
 			"issueTime": now.Format("2006-01-02T15:04:05.000"),
 			"Payload":   payload,
 		},
