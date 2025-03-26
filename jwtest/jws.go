@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rsa"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -64,4 +65,28 @@ func verifyJws(token string, publicKey *rsa.PublicKey) (header, claims map[strin
 		claims["claim"] = jws.Claims
 	}
 	return
+}
+
+func vfy(
+	prvkey *rsa.PrivateKey,
+	pubkey *rsa.PublicKey,
+) {
+	// Sign
+	token, err := signJws(prvkey)
+	if err != nil {
+		log.Fatalf("[SIGN] %v", err)
+	}
+	fmt.Printf("Token:\n%v\n\n", token)
+
+	// Verify
+	header, claims, err := verifyJws(token, pubkey)
+	if err != nil {
+		log.Fatalf("[VERIFY] %v", err)
+	}
+	for h, v := range header {
+		fmt.Printf("Header \"%v\": \"%v\"\n", h, v)
+	}
+	for c, v := range claims {
+		fmt.Printf("Claims \"%v\": \"%v\"\n", c, v)
+	}
 }

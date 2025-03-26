@@ -46,30 +46,6 @@ func readPublicKey(fstr string) (pubkey *rsa.PublicKey, err error) {
 	return
 }
 
-func vfy(
-	prvkey *rsa.PrivateKey,
-	pubkey *rsa.PublicKey,
-) {
-	// Sign
-	token, err := signJws(prvkey)
-	if err != nil {
-		log.Fatalf("[SIGN] %v", err)
-	}
-	fmt.Printf("Token:\n%v\n\n", token)
-
-	// Verify
-	header, claims, err := verifyJws(token, pubkey)
-	if err != nil {
-		log.Fatalf("[VERIFY] %v", err)
-	}
-	for h, v := range header {
-		fmt.Printf("Header \"%v\": \"%v\"\n", h, v)
-	}
-	for c, v := range claims {
-		fmt.Printf("Claims \"%v\": \"%v\"\n", c, v)
-	}
-}
-
 func main() {
 	// Read sender private key
 	prvs, err := readPrivateKey("send.pem")
