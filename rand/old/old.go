@@ -7,27 +7,32 @@ import (
 	"time"
 )
 
-func Run() {
+func Run(c uint8) {
+	if c > 3 {
+		fmt.Printf("Input range: 1, 2, 3")
+		return
+	}
+
 	var run uint64 = 10000000
 	frm := fmt.Sprintf("%%%vv", int(math.Log10(float64(run))))
-
 	var ttl time.Duration
-	run0 := []int64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	for _, idx := range run0 {
-		r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewSource(time.Now().UnixNano()+idx)), run)
-		ttl += elapsed
-		fmt.Printf("randBench (old 0) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
-	}
-	fmt.Printf("                    avg %-14v\n\n", ttl/time.Duration(len(run0)))
 
-	ttl = 0
-	run1 := []int64{10, 11, 12, 13, 14, 15, 16, 17, 18, 19}
-	for _, idx := range run1 {
-		r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewSource(time.Now().UnixNano()+idx)), run)
-		ttl += elapsed
-		fmt.Printf("randBench (old 1) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+	runs := []int64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	switch {
+	case c&1 > 0:
+		for _, idx := range runs {
+			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewSource(time.Now().UnixNano()+idx)), run)
+			ttl += elapsed
+			fmt.Printf("randBench (old 0) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+		}
+	case c&2 > 0:
+		for _, idx := range runs {
+			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewSource(time.Now().UnixNano()+idx)), run)
+			ttl += elapsed
+			fmt.Printf("randBench (old 1) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+		}
 	}
-	fmt.Printf("                    avg %-14v\n", ttl/time.Duration(len(run1)))
+	fmt.Printf("                    avg %-14v\n\n", ttl/time.Duration(len(runs)))
 }
 
 func sim0(

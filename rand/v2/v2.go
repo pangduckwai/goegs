@@ -7,36 +7,38 @@ import (
 	"time"
 )
 
-func Run() {
+func Run(c uint8) {
+	if c > 7 {
+		fmt.Printf("Input range: 1, 2, 3, 4, 5, 6, 7")
+		return
+	}
+
 	var run uint64 = 10000000
 	frm := fmt.Sprintf("%%%vv", int(math.Log10(float64(run))))
-
 	var ttl time.Duration
-	run0 := []uint64{20, 21, 22, 23, 24, 25, 26, 27, 28, 29}
-	for _, idx := range run0 {
-		r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
-		ttl += elapsed
-		fmt.Printf("randBench  (v2 0) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
-	}
-	fmt.Printf("                    avg %-14v\n\n", ttl/time.Duration(len(run0)))
 
-	ttl = 0
-	run1 := []uint64{30, 31, 32, 33, 34, 35, 36, 37, 38, 39}
-	for _, idx := range run1 {
-		r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
-		ttl += elapsed
-		fmt.Printf("randBench  (v2 1) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+	runs := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	switch {
+	case c&1 > 0:
+		for _, idx := range runs {
+			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
+			ttl += elapsed
+			fmt.Printf("randBench  (v2 0) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+		}
+	case c&2 > 0:
+		for _, idx := range runs {
+			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
+			ttl += elapsed
+			fmt.Printf("randBench  (v2 1) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+		}
+	case c&4 > 0:
+		for _, idx := range runs {
+			r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
+			ttl += elapsed
+			fmt.Printf("randBench  (v2 2) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+		}
 	}
-	fmt.Printf("                    avg %-14v\n\n", ttl/time.Duration(len(run1)))
-
-	ttl = 0
-	run2 := []uint64{40, 41, 42, 43, 44, 45, 46, 47, 48, 49}
-	for _, idx := range run2 {
-		r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
-		ttl += elapsed
-		fmt.Printf("randBench  (v2 2) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
-	}
-	fmt.Printf("                    avg %-14v\n", ttl/time.Duration(len(run2)))
+	fmt.Printf("                    avg %-14v\n\n", ttl/time.Duration(len(runs)))
 }
 
 func sim0(
