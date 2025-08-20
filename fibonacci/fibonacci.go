@@ -80,3 +80,15 @@ func main() {
 	}
 	fmt.Printf("Calculated %v terms in the Fibonacci sequence, elapsed time %v\n", t, time.Now().Sub(now))
 }
+
+// Simple answer
+// func main() {
+// 	p := 0
+// 	f := 1
+// 	for i := 3; i <= 30; i++ {
+// 		t := f
+// 		f = f + p
+// 		p = t
+// 		fmt.Printf("%2v - %v\n", i, f)
+// 	}
+// }
