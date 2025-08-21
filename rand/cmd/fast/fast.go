@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"os"
-	"runtime"
-	"runtime/pprof"
 	"strconv"
 
 	"golang.org/x/text/language"
@@ -14,17 +12,17 @@ import (
 )
 
 func main() {
-	////////////////// pprof /////////////////////
-	fcpu, err := os.Create("cmd/fast/pgo/cpu.pprof")
-	if err != nil {
-		log.Fatal("[PRF] Failed to create CPU profile", err)
-	}
-	defer fcpu.Close()
-	if err = pprof.StartCPUProfile(fcpu); err != nil {
-		log.Fatal("[PRF] Failed to start CPU profiling", err)
-	}
-	defer pprof.StopCPUProfile()
-	////////////////// pprof ///////////////////*/
+	// ////////////////// pprof /////////////////////
+	// fcpu, err := os.Create("cmd/fast/pgo/cpu.pprof")
+	// if err != nil {
+	// 	log.Fatal("[PRF] Failed to create CPU profile", err)
+	// }
+	// defer fcpu.Close()
+	// if err = pprof.StartCPUProfile(fcpu); err != nil {
+	// 	log.Fatal("[PRF] Failed to start CPU profiling", err)
+	// }
+	// defer pprof.StopCPUProfile()
+	// ////////////////// pprof ///////////////////*/
 
 	if len(os.Args) != 2 {
 		common.Usage(true)
@@ -49,15 +47,15 @@ func main() {
 	prt := message.NewPrinter(language.English)
 	fast.Run(uint8(c), r, prt.Sprintf("runs: %v", r))
 
-	////////////////// pprof /////////////////////
-	fmem, err := os.Create("cmd/fast/pgo/mem.pprof")
-	if err != nil {
-		log.Fatal("[PRF] Failed to create Memory profile", err)
-	}
-	defer fmem.Close()
-	runtime.GC() // get up-to-date statistics
-	if err = pprof.WriteHeapProfile(fmem); err != nil {
-		log.Fatal("[PRF] Failed to start Memory profiling", err)
-	}
-	////////////////// pprof ///////////////////*/
+	// ////////////////// pprof /////////////////////
+	// fmem, err := os.Create("cmd/fast/pgo/mem.pprof")
+	// if err != nil {
+	// 	log.Fatal("[PRF] Failed to create Memory profile", err)
+	// }
+	// defer fmem.Close()
+	// runtime.GC() // get up-to-date statistics
+	// if err = pprof.WriteHeapProfile(fmem); err != nil {
+	// 	log.Fatal("[PRF] Failed to start Memory profiling", err)
+	// }
+	// ////////////////// pprof ///////////////////*/
 }

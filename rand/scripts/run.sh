@@ -23,6 +23,8 @@ cd $PROJ
 sleep 1
 ./cmd/old/old 2
 sleep 1
+./cmd/old/old 4
+sleep 1
 ./cmd/ver2/ver2 1
 sleep 1
 ./cmd/ver2/ver2 2

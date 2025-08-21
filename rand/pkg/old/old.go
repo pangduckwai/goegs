@@ -10,8 +10,8 @@ import (
 )
 
 func Run(c uint8, run uint64, msg string) {
-	if c > 3 {
-		fmt.Println("Input range: 1, 2, 3")
+	if c > 7 {
+		fmt.Println("Input range: 1, 2, 3, 4, 5, 6, 7")
 		return
 	}
 
@@ -20,7 +20,7 @@ func Run(c uint8, run uint64, msg string) {
 	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	if c&1 > 0 {
 		var ttl time.Duration
-		fmt.Printf("randBench: rand benchmark | math/rand - Intn() | %v\n", msg)
+		fmt.Printf("OLD : rand benchmark | math/rand - Intn() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
 			ttl += elapsed
@@ -30,7 +30,17 @@ func Run(c uint8, run uint64, msg string) {
 	}
 	if c&2 > 0 {
 		var ttl time.Duration
-		fmt.Printf("randBench: rand benchmark | math/rand - Int63() | %v\n", msg)
+		fmt.Printf("OLD : rand benchmark | math/rand - Int63() | %v\n", msg)
+		for _, idx := range trtn {
+			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
+			ttl += elapsed
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
+		}
+		common.DisplayAvg(ttl, len(trtn), run)
+	}
+	if c&4 > 0 {
+		var ttl time.Duration
+		fmt.Printf("OLD : rand benchmark | math/rand - Uint64 | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
 			ttl += elapsed
@@ -80,6 +90,31 @@ func sim1(
 		} else if val < 4611686018427387902 {
 			c1++
 		} else if val < 6917529027641081853 {
+			c2++
+		} else {
+			c3++
+		}
+	}
+	lpsd = time.Since(strt)
+	return
+}
+
+func sim2(
+	rnd *rand.Rand,
+	run uint64,
+) (
+	c0, c1, c2, c3 uint64,
+	lpsd time.Duration,
+) {
+	var val uint64
+	strt := time.Now()
+	for range run {
+		val = rnd.Uint64()
+		if val < 4611686018427387904 {
+			c0++
+		} else if val < 9223372036854775808 {
+			c1++
+		} else if val < 13835058055282163712 {
 			c2++
 		} else {
 			c3++

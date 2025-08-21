@@ -20,7 +20,7 @@ func Run(c uint8, run uint64, msg string) {
 	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	if c&1 > 0 {
 		var ttl time.Duration
-		fmt.Printf("randBench: rand benchmark | fastrand - Intn() | %v\n", msg)
+		fmt.Printf("FAST: rand benchmark | fastrand - Intn() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim0(run)
 			ttl += elapsed
@@ -30,7 +30,7 @@ func Run(c uint8, run uint64, msg string) {
 	}
 	if c&2 > 0 {
 		var ttl time.Duration
-		fmt.Printf("randBench: rand benchmark | fastrand - Int63() | %v\n", msg)
+		fmt.Printf("FAST: rand benchmark | fastrand - Int63() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim1(run)
 			ttl += elapsed
@@ -40,7 +40,7 @@ func Run(c uint8, run uint64, msg string) {
 	}
 	if c&4 > 0 {
 		var ttl time.Duration
-		fmt.Printf("randBench: rand benchmark | fastrand - Uint64() | %v\n", msg)
+		fmt.Printf("FAST: rand benchmark | fastrand - Uint64() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim2(run)
 			ttl += elapsed
