@@ -42,7 +42,7 @@ func Run(c uint8, run uint64, msg string) {
 		var ttl time.Duration
 		fmt.Printf("OLD : rand benchmark | math/rand - Uint64 | %v\n", msg)
 		for _, idx := range trtn {
-			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
+			r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
 			ttl += elapsed
 			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
