@@ -1,44 +1,53 @@
-package v2
+package ver2
 
 import (
 	"fmt"
 	"math"
 	"math/rand/v2"
 	"time"
+
+	"sea9.org/go/egs/rand/pkg/common"
 )
 
-func Run(c uint8) {
+func Run(c uint8, run uint64) {
 	if c > 7 {
 		fmt.Printf("Input range: 1, 2, 3, 4, 5, 6, 7")
 		return
 	}
 
-	var run uint64 = 10000000
-	frm := fmt.Sprintf("%%%vv", int(math.Log10(float64(run))))
-	var ttl time.Duration
+	pad := int(math.Log10(float64(run)))
 
-	runs := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	switch {
-	case c&1 > 0:
-		for _, idx := range runs {
+	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9} //iterations
+	if c&1 > 0 {
+		var ttl time.Duration
+		fmt.Println("randBench: rand benchmark | math/rand/v2 - IntN()")
+		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
-			fmt.Printf("randBench  (v2 0) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
-	case c&2 > 0:
-		for _, idx := range runs {
+		common.DisplayAvg(ttl, len(trtn), run)
+	}
+	if c&2 > 0 {
+		var ttl time.Duration
+		fmt.Println("randBench: rand benchmark | math/rand/v2 - Int64()")
+		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
-			fmt.Printf("randBench  (v2 1) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
-	case c&4 > 0:
-		for _, idx := range runs {
+		common.DisplayAvg(ttl, len(trtn), run)
+	}
+	if c&4 > 0 {
+		var ttl time.Duration
+		fmt.Println("randBench: rand benchmark | math/rand/v2 - Uint64()")
+		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
-			fmt.Printf("randBench  (v2 2) %2v in %-14v - 0: "+frm+"; 1: "+frm+"; 2: "+frm+"; 3: "+frm+"\n", idx, elapsed, r0, r1, r2, r3)
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
+		common.DisplayAvg(ttl, len(trtn), run)
 	}
-	fmt.Printf("                    avg %-14v\n\n", ttl/time.Duration(len(runs)))
 }
 
 func sim0(
