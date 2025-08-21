@@ -9,9 +9,9 @@ import (
 	"sea9.org/go/egs/rand/pkg/common"
 )
 
-func Run(c uint8, run uint64) {
+func Run(c uint8, run uint64, msg string) {
 	if c > 7 {
-		fmt.Printf("Input range: 1, 2, 3, 4, 5, 6, 7")
+		fmt.Println("Input range: 1, 2, 3, 4, 5, 6, 7")
 		return
 	}
 
@@ -20,7 +20,7 @@ func Run(c uint8, run uint64) {
 	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9} //iterations
 	if c&1 > 0 {
 		var ttl time.Duration
-		fmt.Println("randBench: rand benchmark | math/rand/v2 - IntN()")
+		fmt.Printf("randBench: rand benchmark | math/rand/v2 - IntN() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
@@ -30,7 +30,7 @@ func Run(c uint8, run uint64) {
 	}
 	if c&2 > 0 {
 		var ttl time.Duration
-		fmt.Println("randBench: rand benchmark | math/rand/v2 - Int64()")
+		fmt.Printf("randBench: rand benchmark | math/rand/v2 - Int64() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
@@ -40,7 +40,7 @@ func Run(c uint8, run uint64) {
 	}
 	if c&4 > 0 {
 		var ttl time.Duration
-		fmt.Println("randBench: rand benchmark | math/rand/v2 - Uint64()")
+		fmt.Printf("randBench: rand benchmark | math/rand/v2 - Uint64() | %v\n", msg)
 		for _, idx := range trtn {
 			r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed

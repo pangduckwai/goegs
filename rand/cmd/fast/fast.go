@@ -10,12 +10,12 @@ import (
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"sea9.org/go/egs/rand/pkg/common"
-	"sea9.org/go/egs/rand/pkg/old"
+	"sea9.org/go/egs/rand/pkg/fast"
 )
 
 func main() {
 	////////////////// pprof /////////////////////
-	fcpu, err := os.Create("cmd/old/pgo/cpu.pprof")
+	fcpu, err := os.Create("cmd/fast/pgo/cpu.pprof")
 	if err != nil {
 		log.Fatal("[PRF] Failed to create CPU profile", err)
 	}
@@ -33,7 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if c < 1 || c > 3 {
+	if c < 1 || c > 7 {
 		common.Usage(true)
 	}
 
@@ -47,10 +47,10 @@ func main() {
 	}
 
 	prt := message.NewPrinter(language.English)
-	old.Run(uint8(c), r, prt.Sprintf("runs: %v", r))
+	fast.Run(uint8(c), r, prt.Sprintf("runs: %v", r))
 
 	////////////////// pprof /////////////////////
-	fmem, err := os.Create("cmd/old/pgo/mem.pprof")
+	fmem, err := os.Create("cmd/fast/pgo/mem.pprof")
 	if err != nil {
 		log.Fatal("[PRF] Failed to create Memory profile", err)
 	}

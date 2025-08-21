@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const RUN_NUM = 100000000
+const RUN_NUM = 10000000 // 10,000,000
 
 const USAGE = "Usage: rand [1-3, 9-15]"
 

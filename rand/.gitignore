@@ -1,0 +1,4 @@
+# Binaries in cmd/
+cmd/**
+!cmd/**/
+!cmd/**/*.go
