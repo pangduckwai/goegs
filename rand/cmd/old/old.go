@@ -24,28 +24,39 @@ func main() {
 	// defer pprof.StopCPUProfile()
 	// ////////////////// pprof ///////////////////*/
 
-	if len(os.Args) != 2 {
-		common.Usage(true)
-	}
-	c, err := strconv.Atoi(os.Args[1])
-	if err != nil {
-		log.Fatal(err)
-	}
-	if c < 1 || c > 7 {
-		common.Usage(true)
-	}
-
-	var r uint64 = common.RUN_NUM
-	e := os.Getenv("RAND_RUN_NUM")
-	if e != "" {
-		t, err := strconv.Atoi(e)
+	var err error
+	var run uint64 = common.RUN_NUM
+	var cmd, tmp int
+	env := os.Getenv("RAND_RUN_NUM")
+	if env != "" {
+		tmp, err = strconv.Atoi(env)
 		if err == nil {
-			r = uint64(t)
+			run = uint64(tmp)
 		}
 	}
 
+	switch len(os.Args) {
+	case 3:
+		tmp, err = strconv.Atoi(os.Args[2])
+		if err == nil {
+			run = uint64(tmp)
+		}
+		fallthrough
+	case 2:
+		cmd, err = strconv.Atoi(os.Args[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+	default:
+		common.Usage(true)
+	}
+
+	if cmd < 1 || cmd > 7 {
+		common.Usage(true)
+	}
+
 	prt := message.NewPrinter(language.English)
-	old.Run(uint8(c), r, prt.Sprintf("runs: %v", r))
+	old.Run(uint8(cmd), run, prt.Sprintf("runs: %v", run))
 
 	// ////////////////// pprof /////////////////////
 	// fmem, err := os.Create("cmd/old/pgo/mem.pprof")
