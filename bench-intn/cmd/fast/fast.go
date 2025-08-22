@@ -23,6 +23,7 @@ func main() {
 	// ////////////////// pprof ///////////////////*/
 
 	var err error
+	var n int = common.SEL_NUM
 	var run uint64 = common.RUN_NUM
 	var cmd, tmp int
 	env := os.Getenv("RAND_RUN_NUM")
@@ -34,10 +35,16 @@ func main() {
 	}
 
 	switch len(os.Args) {
+	case 4:
+		tmp, err = strconv.Atoi(os.Args[3])
+		if err == nil {
+			run = uint64(tmp)
+		}
+		fallthrough
 	case 3:
 		tmp, err = strconv.Atoi(os.Args[2])
 		if err == nil {
-			run = uint64(tmp)
+			n = tmp
 		}
 		fallthrough
 	case 2:
@@ -49,11 +56,12 @@ func main() {
 		common.Usage(true)
 	}
 
-	if cmd < 1 || cmd > 7 {
+	c := cmd & 7
+	if c < 1 || c > 7 {
 		common.Usage(true)
 	}
 
-	fast.Run(uint8(cmd), run)
+	fast.Run(uint8(cmd), n, run)
 
 	// ////////////////// pprof /////////////////////
 	// fmem, err := os.Create("cmd/fast/pgo/mem.pprof")
