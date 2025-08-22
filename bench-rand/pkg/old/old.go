@@ -57,16 +57,17 @@ func sim0(
 	c0, c1, c2, c3 uint64,
 	lpsd time.Duration,
 ) {
+	var val int
 	strt := time.Now()
 	for range run {
-		switch rnd.Intn(4) {
-		case 0:
+		val = rnd.Intn(4)
+		if val < 1 {
 			c0++
-		case 1:
+		} else if val < 2 {
 			c1++
-		case 2:
+		} else if val < 3 {
 			c2++
-		case 3:
+		} else {
 			c3++
 		}
 	}
