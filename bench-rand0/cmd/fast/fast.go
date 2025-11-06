@@ -7,13 +7,13 @@ import (
 
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"sea9.org/go/egs/randBench/pkg/common"
-	"sea9.org/go/egs/randBench/pkg/old"
+	"sea9.org/go/egs/randBench0/pkg/common"
+	"sea9.org/go/egs/randBench0/pkg/fast"
 )
 
 func main() {
 	// ////////////////// pprof /////////////////////
-	// fcpu, err := os.Create("cmd/old/pgo/cpu.pprof")
+	// fcpu, err := os.Create("cmd/fast/pgo/cpu.pprof")
 	// if err != nil {
 	// 	log.Fatal("[PRF] Failed to create CPU profile", err)
 	// }
@@ -56,10 +56,10 @@ func main() {
 	}
 
 	prt := message.NewPrinter(language.English)
-	old.Run(uint8(cmd), run, prt.Sprintf("runs: %v", run))
+	fast.Run(uint8(cmd), run, prt.Sprintf("runs: %v", run))
 
 	// ////////////////// pprof /////////////////////
-	// fmem, err := os.Create("cmd/old/pgo/mem.pprof")
+	// fmem, err := os.Create("cmd/fast/pgo/mem.pprof")
 	// if err != nil {
 	// 	log.Fatal("[PRF] Failed to create Memory profile", err)
 	// }

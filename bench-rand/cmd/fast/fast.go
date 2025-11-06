@@ -7,8 +7,8 @@ import (
 
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"sea9.org/go/egs/rand/pkg/common"
-	"sea9.org/go/egs/rand/pkg/fast"
+	"sea9.org/go/egs/randBench/pkg/common"
+	"sea9.org/go/egs/randBench/pkg/fast"
 )
 
 func main() {

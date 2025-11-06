@@ -6,7 +6,7 @@ import (
 	"math/rand/v2"
 	"time"
 
-	"sea9.org/go/egs/rand/pkg/common"
+	"sea9.org/go/egs/randBench/pkg/common"
 )
 
 func Run(c uint8, run uint64, msg string) {

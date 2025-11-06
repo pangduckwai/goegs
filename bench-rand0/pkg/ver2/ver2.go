@@ -1,12 +1,12 @@
-package fast
+package ver2
 
 import (
 	"fmt"
 	"math"
+	"math/rand/v2"
 	"time"
 
-	"sea9.org/go/egs/randBench/pkg/bytedance/fastrand"
-	"sea9.org/go/egs/randBench/pkg/common"
+	"sea9.org/go/egs/randBench0/pkg/common"
 )
 
 func Run(c uint8, run uint64, msg string) {
@@ -17,12 +17,12 @@ func Run(c uint8, run uint64, msg string) {
 
 	pad := int(math.Log10(float64(run)))
 
-	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9} //iterations
 	if c&1 > 0 {
 		var ttl time.Duration
-		fmt.Printf("FAST: rand benchmark | fastrand - Intn() | %v\n", msg)
+		fmt.Printf("VER2: rand benchmark | math/rand/v2 - IntN() | %v\n", msg)
 		for _, idx := range trtn {
-			r0, r1, r2, r3, elapsed := sim0(run)
+			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
 			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
@@ -30,9 +30,9 @@ func Run(c uint8, run uint64, msg string) {
 	}
 	if c&2 > 0 {
 		var ttl time.Duration
-		fmt.Printf("FAST: rand benchmark | fastrand - Int63() | %v\n", msg)
+		fmt.Printf("VER2: rand benchmark | math/rand/v2 - Int64() | %v\n", msg)
 		for _, idx := range trtn {
-			r0, r1, r2, r3, elapsed := sim1(run)
+			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
 			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
@@ -40,9 +40,9 @@ func Run(c uint8, run uint64, msg string) {
 	}
 	if c&4 > 0 {
 		var ttl time.Duration
-		fmt.Printf("FAST: rand benchmark | fastrand - Uint64() | %v\n", msg)
+		fmt.Printf("VER2: rand benchmark | math/rand/v2 - Uint64() | %v\n", msg)
 		for _, idx := range trtn {
-			r0, r1, r2, r3, elapsed := sim2(run)
+			r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), idx)), run)
 			ttl += elapsed
 			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
@@ -51,6 +51,7 @@ func Run(c uint8, run uint64, msg string) {
 }
 
 func sim0(
+	rnd *rand.Rand,
 	run uint64,
 ) (
 	c0, c1, c2, c3 uint64,
@@ -59,7 +60,7 @@ func sim0(
 	var val int
 	strt := time.Now()
 	for range run {
-		val = fastrand.Intn(4)
+		val = rnd.IntN(4)
 		if val < 1 {
 			c0++
 		} else if val < 2 {
@@ -75,6 +76,7 @@ func sim0(
 }
 
 func sim1(
+	rnd *rand.Rand,
 	run uint64,
 ) (
 	c0, c1, c2, c3 uint64,
@@ -83,12 +85,12 @@ func sim1(
 	var val int64
 	strt := time.Now()
 	for range run {
-		val = fastrand.Int63()
-		if val < 2305843009213693951 {
+		val = rnd.Int64()
+		if val < 2305843009213693952 {
 			c0++
-		} else if val < 4611686018427387902 {
+		} else if val < 4611686018427387904 {
 			c1++
-		} else if val < 6917529027641081853 {
+		} else if val < 6917529027641081856 {
 			c2++
 		} else {
 			c3++
@@ -99,6 +101,7 @@ func sim1(
 }
 
 func sim2(
+	rnd *rand.Rand,
 	run uint64,
 ) (
 	c0, c1, c2, c3 uint64,
@@ -107,7 +110,7 @@ func sim2(
 	var val uint64
 	strt := time.Now()
 	for range run {
-		val = fastrand.Uint64()
+		val = rnd.Uint64()
 		if val < 4611686018427387904 {
 			c0++
 		} else if val < 9223372036854775808 {

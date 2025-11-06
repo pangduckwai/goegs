@@ -1,4 +1,4 @@
-module sea9.org/go/egs/randBench
+module sea9.org/go/egs/randBench0
 
 go 1.24.3
 

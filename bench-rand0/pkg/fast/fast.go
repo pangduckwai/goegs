@@ -5,8 +5,8 @@ import (
 	"math"
 	"time"
 
-	"sea9.org/go/egs/randBench/pkg/bytedance/fastrand"
-	"sea9.org/go/egs/randBench/pkg/common"
+	"sea9.org/go/egs/randBench0/pkg/bytedance/fastrand"
+	"sea9.org/go/egs/randBench0/pkg/common"
 )
 
 func Run(c uint8, run uint64, msg string) {

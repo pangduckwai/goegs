@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"sea9.org/go/egs/randBench/pkg/common"
+	"sea9.org/go/egs/randBench0/pkg/common"
 )
 
 func main() {
