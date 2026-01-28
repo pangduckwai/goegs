@@ -1,14 +1,11 @@
 package common
 
-func Rand2o(rnd uint64) int {
-	if rnd < 9223372036854775807 {
-		return 0
-	} else {
-		return 1
-	}
-}
 func Rand2(rnd uint64) int {
 	return int(rnd >> 63)
+}
+
+func Rand4(rnd uint64) int {
+	return int(rnd >> 62)
 }
 
 func Rand3(rnd uint64) int {
@@ -19,14 +16,6 @@ func Rand3(rnd uint64) int {
 	} else {
 		return 2
 	}
-}
-
-func Rand4(rnd uint64) int {
-	return int(rnd >> 62)
-}
-
-func Rand8(rnd uint64) int {
-	return int(rnd >> 61)
 }
 
 func Rand10(rnd uint64) int {
@@ -53,8 +42,7 @@ func Rand10(rnd uint64) int {
 	}
 }
 
-/*
-func RandN(n, int, rnd uint64) int {
+func RandN(n int, rnd uint64) int {
 	switch n {
 	case 2:
 		if rnd < 9223372036854775807 { // diff:1; 2÷1=2
@@ -2033,4 +2021,3 @@ func RandN(n, int, rnd uint64) int {
 	}
 	return -1
 }
-*/

@@ -19,7 +19,7 @@ import (
 	"math/bits"
 	"unsafe"
 
-	"sea9.org/go/egs/randBench/internal/bytedance/runtimex"
+	"sea9.org/go/egs/randBench2/internal/bytedance/runtimex"
 )
 
 // Uint32 returns a pseudo-random 32-bit value as a uint32.

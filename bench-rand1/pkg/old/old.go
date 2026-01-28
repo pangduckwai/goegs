@@ -9,107 +9,117 @@ import (
 	"sea9.org/go/egs/randBench1/pkg/common"
 )
 
-func Run(c uint8, n int, run uint64) {
-	rw := false
-	if c&8 > 0 {
-		rw = true
-	}
-	cmd := c & 7
-	if cmd > 3 {
-		fmt.Println("Input range: 1, 2, 3")
+func Run(c uint8, run uint64, msg string) {
+	if c > 7 {
+		fmt.Println("Input range: 1, 2, 3, 4, 5, 6, 7")
 		return
 	}
 
 	pad := int(math.Log10(float64(run)))
 
 	trtn := []uint64{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	if cmd&1 > 0 {
+	if c&1 > 0 {
 		var ttl time.Duration
-		fmt.Printf("OLD : rand benchmark | math/rand - Intn() | %v\n", run)
+		fmt.Printf("OLD : rand benchmark | math/rand - Intn() | %v\n", msg)
 		for _, idx := range trtn {
-			if !rw {
-				rst, elapsed := simIntn(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), n, run)
-				ttl += elapsed
-				common.DisplayRun(idx, run, elapsed, rst, pad)
-			} else {
-				elapsed := simIntnRaw(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
-				ttl += elapsed
-				common.DisplayRaw(idx, elapsed)
-			}
+			r0, r1, r2, r3, elapsed := sim0(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
+			ttl += elapsed
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
 		common.DisplayAvg(ttl, len(trtn), run)
 	}
-	if cmd&2 > 0 {
+	if c&2 > 0 {
 		var ttl time.Duration
-		fmt.Printf("OLD : rand benchmark | math/rand - Uint64 | %v\n", run)
+		fmt.Printf("OLD : rand benchmark | math/rand - Int63() | %v\n", msg)
 		for _, idx := range trtn {
-			if !rw {
-				rst, elapsed := simUint64(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), n, run)
-				ttl += elapsed
-				common.DisplayRun(idx, run, elapsed, rst, pad)
-			} else {
-				elapsed := simUint64Raw(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
-				ttl += elapsed
-				common.DisplayRaw(idx, elapsed)
-			}
+			r0, r1, r2, r3, elapsed := sim1(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
+			ttl += elapsed
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
+		}
+		common.DisplayAvg(ttl, len(trtn), run)
+	}
+	if c&4 > 0 {
+		var ttl time.Duration
+		fmt.Printf("OLD : rand benchmark | math/rand - Uint64 | %v\n", msg)
+		for _, idx := range trtn {
+			r0, r1, r2, r3, elapsed := sim2(rand.New(rand.NewSource(time.Now().UnixNano()+int64(idx))), run)
+			ttl += elapsed
+			common.DisplayRun(idx, run, elapsed, r0, r1, r2, r3, pad)
 		}
 		common.DisplayAvg(ttl, len(trtn), run)
 	}
 }
 
-func simIntnRaw(
+func sim0(
 	rnd *rand.Rand,
-	run uint64,
-) (lpsd time.Duration) {
-	strt := time.Now()
-	for range run {
-		rnd.Intn(7)
-	}
-	lpsd = time.Since(strt)
-	return
-}
-
-func simIntn(
-	rnd *rand.Rand,
-	n int,
 	run uint64,
 ) (
-	rst []uint64,
+	c0, c1, c2, c3 uint64,
 	lpsd time.Duration,
 ) {
-	rst = make([]uint64, n)
+	var val int
 	strt := time.Now()
 	for range run {
-		rst[rnd.Intn(n)]++
+		val = rnd.Intn(4)
+		if val < 1 {
+			c0++
+		} else if val < 2 {
+			c1++
+		} else if val < 3 {
+			c2++
+		} else {
+			c3++
+		}
 	}
 	lpsd = time.Since(strt)
 	return
 }
 
-func simUint64Raw(
+func sim1(
 	rnd *rand.Rand,
-	run uint64,
-) (lpsd time.Duration) {
-	strt := time.Now()
-	for range run {
-		rnd.Uint64()
-	}
-	lpsd = time.Since(strt)
-	return
-}
-
-func simUint64(
-	rnd *rand.Rand,
-	n int,
 	run uint64,
 ) (
-	rst []uint64,
+	c0, c1, c2, c3 uint64,
 	lpsd time.Duration,
 ) {
-	rst = make([]uint64, n)
+	var val int64
 	strt := time.Now()
 	for range run {
-		rst[common.RandN(n, rnd.Uint64())]++
+		val = rnd.Int63()
+		if val < 2305843009213693951 {
+			c0++
+		} else if val < 4611686018427387902 {
+			c1++
+		} else if val < 6917529027641081853 {
+			c2++
+		} else {
+			c3++
+		}
+	}
+	lpsd = time.Since(strt)
+	return
+}
+
+func sim2(
+	rnd *rand.Rand,
+	run uint64,
+) (
+	c0, c1, c2, c3 uint64,
+	lpsd time.Duration,
+) {
+	var val uint64
+	strt := time.Now()
+	for range run {
+		val = rnd.Uint64()
+		if val < 4611686018427387904 {
+			c0++
+		} else if val < 9223372036854775808 {
+			c1++
+		} else if val < 13835058055282163712 {
+			c2++
+		} else {
+			c3++
+		}
 	}
 	lpsd = time.Since(strt)
 	return

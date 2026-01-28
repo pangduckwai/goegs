@@ -5,10 +5,8 @@ import (
 	"os"
 	"strconv"
 
-	"golang.org/x/text/language"
-	"golang.org/x/text/message"
-	"sea9.org/go/egs/randBench1/pkg/common"
-	"sea9.org/go/egs/randBench1/pkg/old"
+	"sea9.org/go/egs/randBench2/pkg/common"
+	"sea9.org/go/egs/randBench2/pkg/old"
 )
 
 func main() {
@@ -25,6 +23,7 @@ func main() {
 	// ////////////////// pprof ///////////////////*/
 
 	var err error
+	var n int = common.SEL_NUM
 	var run uint64 = common.RUN_NUM
 	var cmd, tmp int
 	env := os.Getenv("RAND_RUN_NUM")
@@ -36,10 +35,16 @@ func main() {
 	}
 
 	switch len(os.Args) {
+	case 4:
+		tmp, err = strconv.Atoi(os.Args[3])
+		if err == nil {
+			run = uint64(tmp)
+		}
+		fallthrough
 	case 3:
 		tmp, err = strconv.Atoi(os.Args[2])
 		if err == nil {
-			run = uint64(tmp)
+			n = tmp
 		}
 		fallthrough
 	case 2:
@@ -51,12 +56,12 @@ func main() {
 		common.Usage(true)
 	}
 
-	if cmd < 1 || cmd > 7 {
+	c := cmd & 7
+	if c < 1 || c > 7 {
 		common.Usage(true)
 	}
 
-	prt := message.NewPrinter(language.English)
-	old.Run(uint8(cmd), run, prt.Sprintf("runs: %v", run))
+	old.Run(uint8(cmd), n, run)
 
 	// ////////////////// pprof /////////////////////
 	// fmem, err := os.Create("cmd/old/pgo/mem.pprof")

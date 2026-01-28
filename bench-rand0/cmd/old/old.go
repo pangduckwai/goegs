@@ -1,15 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
 
-	"golang.org/x/text/language"
-	"golang.org/x/text/message"
 	"sea9.org/go/egs/randBench0/pkg/common"
 	"sea9.org/go/egs/randBench0/pkg/old"
 )
+
+/*
+Intn(?)  !!
+Intn(2)  !
+Intn(10) !
+Perm(?)
+Intn(3)
+*/
 
 func main() {
 	// ////////////////// pprof /////////////////////
@@ -55,8 +62,8 @@ func main() {
 		common.Usage(true)
 	}
 
-	prt := message.NewPrinter(language.English)
-	old.Run(uint8(cmd), run, prt.Sprintf("runs: %v", run))
+	// prt := message.NewPrinter(language.English)
+	old.Run(uint8(cmd), run, fmt.Sprintf("runs: %v", run))
 
 	// ////////////////// pprof /////////////////////
 	// fmem, err := os.Create("cmd/old/pgo/mem.pprof")
