@@ -1,0 +1,7 @@
+# Binaries in cmd/
+cmd/**
+!cmd/**/
+!cmd/**/*.go
+!cmd/**/*.pprof
+
+temp.*
