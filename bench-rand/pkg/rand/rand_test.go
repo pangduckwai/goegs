@@ -13,7 +13,7 @@ import (
 func Benchmark2(b *testing.B) {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano() + int64(1)))
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = rndRand(rnd, 2)
 	}
 }
@@ -21,7 +21,7 @@ func Benchmark2(b *testing.B) {
 func Benchmark4(b *testing.B) {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano() + int64(1)))
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = rndRand(rnd, 4)
 	}
 }
@@ -29,7 +29,7 @@ func Benchmark4(b *testing.B) {
 func Benchmark6(b *testing.B) {
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano() + int64(1)))
 	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = rndRand(rnd, 6)
 	}
 }
